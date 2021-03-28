@@ -1,0 +1,9 @@
+F:\ModuloGameServer\ModuloGameServer.Models\ModuloGameServer.Models\bin\Debug\netstandard2.1\ModuloGameServer.Models.deps.json
+F:\ModuloGameServer\ModuloGameServer.Models\ModuloGameServer.Models\bin\Debug\netstandard2.1\ModuloGameServer.Models.dll
+F:\ModuloGameServer\ModuloGameServer.Models\ModuloGameServer.Models\bin\Debug\netstandard2.1\ModuloGameServer.Models.pdb
+F:\ModuloGameServer\ModuloGameServer.Models\ModuloGameServer.Models\obj\Debug\netstandard2.1\ModuloGameServer.Models.csprojAssemblyReference.cache
+F:\ModuloGameServer\ModuloGameServer.Models\ModuloGameServer.Models\obj\Debug\netstandard2.1\ModuloGameServer.Models.AssemblyInfoInputs.cache
+F:\ModuloGameServer\ModuloGameServer.Models\ModuloGameServer.Models\obj\Debug\netstandard2.1\ModuloGameServer.Models.AssemblyInfo.cs
+F:\ModuloGameServer\ModuloGameServer.Models\ModuloGameServer.Models\obj\Debug\netstandard2.1\ModuloGameServer.Models.csproj.CoreCompileInputs.cache
+F:\ModuloGameServer\ModuloGameServer.Models\ModuloGameServer.Models\obj\Debug\netstandard2.1\ModuloGameServer.Models.dll
+F:\ModuloGameServer\ModuloGameServer.Models\ModuloGameServer.Models\obj\Debug\netstandard2.1\ModuloGameServer.Models.pdb

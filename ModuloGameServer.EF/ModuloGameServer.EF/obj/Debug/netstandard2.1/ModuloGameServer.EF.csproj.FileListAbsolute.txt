@@ -1,0 +1,14 @@
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\bin\Debug\netstandard2.1\ModuloGameServer.Contracts.dll
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\bin\Debug\netstandard2.1\ModuloGameServer.Models.dll
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\obj\Debug\netstandard2.1\ModuloGameServer.EF.csprojAssemblyReference.cache
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\obj\Debug\netstandard2.1\ModuloGameServer.EF.AssemblyInfoInputs.cache
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\obj\Debug\netstandard2.1\ModuloGameServer.EF.AssemblyInfo.cs
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\bin\Debug\netstandard2.1\ModuloGameServer.EF.deps.json
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\bin\Debug\netstandard2.1\ModuloGameServer.EF.dll
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\bin\Debug\netstandard2.1\ModuloGameServer.EF.pdb
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\bin\Debug\netstandard2.1\ModuloGameServer.Contracts.pdb
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\bin\Debug\netstandard2.1\ModuloGameServer.Models.pdb
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\obj\Debug\netstandard2.1\ModuloGameServer.EF.csproj.CoreCompileInputs.cache
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\obj\Debug\netstandard2.1\ModuloGameServer.EF.csproj.CopyComplete
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\obj\Debug\netstandard2.1\ModuloGameServer.EF.dll
+F:\ModuloGameServer\ModuloGameServer.EF\ModuloGameServer.EF\obj\Debug\netstandard2.1\ModuloGameServer.EF.pdb
