@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using ModuloGameServer.Models;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,5 +38,21 @@ namespace ModuloGameServer.Contracts
         {
             return await context.Set<Game>().FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
         }
+
+        public async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken)
+        {
+            return await context.Database.BeginTransactionAsync(cancellationToken);
+        }
+
+        public async Task CoommitTransaction(CancellationToken cancellationToken)
+        {
+            await context.Database.CommitTransactionAsync(cancellationToken);
+        }
+
+        public async Task RollbackTransaction(CancellationToken cancellationToken)
+        {
+            await context.Database.RollbackTransactionAsync(cancellationToken);
+        }
+
     }
 }

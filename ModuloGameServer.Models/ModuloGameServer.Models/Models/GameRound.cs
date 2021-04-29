@@ -41,7 +41,15 @@
         /// </summary>
         public int Digit3 { set; get; }
 
+        /// <summary>
+        /// В рамках какой игры ход
+        /// </summary>
+        public virtual Game Game { set; get; }
 
+        /// <summary>
+        /// Какой пользователь совершает ход
+        /// </summary>
+        public virtual User User { set; get; }
 
     }
 }

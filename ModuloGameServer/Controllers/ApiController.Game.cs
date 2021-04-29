@@ -1,4 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using ModuloGameServer.Models;
+using Newtonsoft.Json;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ModuloGameServer.Controllers
 {
@@ -8,9 +14,43 @@ namespace ModuloGameServer.Controllers
         /// Получить список активных партий или партий ожидающих решение или выбор участников 
         /// или законченная, но не закрытая партия
         /// </summary>
-        public string GetActiveGames()
+        public async Task<string> GetGameList([FromBody] RequestDevice rd, CancellationToken cancellationToken)
         {
-            return "Error";
+            try
+            {
+                if (rd == null) return await JsonErrorAsync("No request");
+
+                int? deviceId = Tokens.GetDeviceId(rd.WorkToken);
+
+                if (!deviceId.HasValue) return await JsonErrorAsync("Access denied");
+
+                Device existDevice = await DBService.DataSourceDevice.GetDevice(deviceId.Value, cancellationToken);
+
+                if (existDevice == null) return await JsonErrorAsync("Access denied");
+
+                if (existDevice.IsDisabled == true) return await JsonErrorAsync("Device is disabled");
+
+                if (!existDevice.UserId.HasValue) return await JsonErrorAsync("No user");
+
+                User u = await DBService.DataSourceUser.GetUserInfo(existDevice.UserId.Value, cancellationToken);
+
+                if (u == null) return await JsonErrorAsync("User not found");
+
+                if (u.DynamicUserInfo == null)
+                {
+                    return await JsonErrorAsync("UserInfo not found");
+                }
+
+                AnswerUser au = new AnswerUser(u);
+
+                return JsonConvert.SerializeObject(au);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                return await JsonErrorAsync("Server Error");
+            }
+
         }
 
         /// <summary>

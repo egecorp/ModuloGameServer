@@ -7192,11 +7192,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.EF\\ModuloGameServer.EF\\ModuloGameServer.EF.csproj",
+      "projectUniqueName": "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.EF\\ModuloGameServer.EF\\ModuloGameServer.EF.csproj",
       "projectName": "ModuloGameServer.EF",
-      "projectPath": "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.EF\\ModuloGameServer.EF\\ModuloGameServer.EF.csproj",
+      "projectPath": "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.EF\\ModuloGameServer.EF\\ModuloGameServer.EF.csproj",
       "packagesPath": "C:\\Users\\Ege\\.nuget\\packages\\",
-      "outputPath": "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.EF\\ModuloGameServer.EF\\obj\\",
+      "outputPath": "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.EF\\ModuloGameServer.EF\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
@@ -7220,11 +7220,11 @@
         "netstandard2.1": {
           "targetAlias": "netstandard2.1",
           "projectReferences": {
-            "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.Contracts\\ModuloGameServer.Contracts\\ModuloGameServer.Contracts.csproj": {
-              "projectPath": "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.Contracts\\ModuloGameServer.Contracts\\ModuloGameServer.Contracts.csproj"
+            "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.Contracts\\ModuloGameServer.Contracts\\ModuloGameServer.Contracts.csproj": {
+              "projectPath": "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.Contracts\\ModuloGameServer.Contracts\\ModuloGameServer.Contracts.csproj"
             },
-            "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\ModuloGameServer.Models.csproj": {
-              "projectPath": "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\ModuloGameServer.Models.csproj"
+            "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\ModuloGameServer.Models.csproj": {
+              "projectPath": "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\ModuloGameServer.Models.csproj"
             }
           }
         }

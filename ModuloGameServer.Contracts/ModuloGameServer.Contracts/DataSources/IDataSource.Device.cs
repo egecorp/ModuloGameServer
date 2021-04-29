@@ -31,7 +31,10 @@ namespace ModuloGameServer.Models
         /// </summary>
         Task<Device> GetDevice(int Id, CancellationToken cancellationToken);
 
-
+        /// <summary>
+        /// Изменяет устройство в базе
+        /// </summary>
+        Task ChangeDevice(Device existsDevice, CancellationToken cancellationToken);
 
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Результат одной игры
     /// </summary>
-    public class UserResult
+    public class GameResult
     {
 
         /// <summary>

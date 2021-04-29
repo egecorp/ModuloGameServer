@@ -21,11 +21,6 @@ namespace ModuloGameServer.Models
         public int Id { set; get; }
 
         /// <summary>
-        /// GUID - второй идентификатор для обращений извне (например, для верификации)
-        /// </summary>
-        public Guid GUID { set; get; }
-
-        /// <summary>
         /// Ник пользователя
         /// </summary>
         public string NicName { set; get; }
@@ -75,6 +70,12 @@ namespace ModuloGameServer.Models
         /// Конец автоматической блокировки пользователя
         /// </summary>
         public DateTime? BlockedUntil { set; get; }
+
+
+        /// <summary>
+        /// Динамические данные пользователя
+        /// </summary>
+        public DynamicUserInfo DynamicUserInfo { set; get;}
 
 
     }

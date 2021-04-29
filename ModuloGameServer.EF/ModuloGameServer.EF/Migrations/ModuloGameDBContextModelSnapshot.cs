@@ -50,11 +50,111 @@ namespace ModuloGameServer.EF.Migrations
                     b.ToTable("Devices");
                 });
 
+            modelBuilder.Entity("ModuloGameServer.Models.DynamicUserInfo", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("DynamicUserInfo");
+                });
+
+            modelBuilder.Entity("ModuloGameServer.Models.Game", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("DynamicUserInfoUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DynamicUserInfoUserId1")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCancel")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFinish")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsStart")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTimeout")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MinutesPerRound")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("User1Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("User2Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DynamicUserInfoUserId");
+
+                    b.HasIndex("DynamicUserInfoUserId1");
+
+                    b.HasIndex("User1Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("ModuloGameServer.Models.GameRound", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Digit1")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Digit2")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Digit3")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoundNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("GameRound");
+                });
+
             modelBuilder.Entity("ModuloGameServer.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("Birthday")
@@ -66,9 +166,6 @@ namespace ModuloGameServer.EF.Migrations
                     b.Property<string>("EMail")
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
-
-                    b.Property<Guid>("GUID")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsAnonim")
                         .HasColumnType("bit");
@@ -96,6 +193,74 @@ namespace ModuloGameServer.EF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ModuloGameServer.Models.DynamicUserInfo", b =>
+                {
+                    b.HasOne("ModuloGameServer.Models.User", null)
+                        .WithOne("DynamicUserInfo")
+                        .HasForeignKey("ModuloGameServer.Models.DynamicUserInfo", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ModuloGameServer.Models.Game", b =>
+                {
+                    b.HasOne("ModuloGameServer.Models.DynamicUserInfo", null)
+                        .WithMany("ActiveGameList")
+                        .HasForeignKey("DynamicUserInfoUserId");
+
+                    b.HasOne("ModuloGameServer.Models.DynamicUserInfo", null)
+                        .WithMany("RecentGameList")
+                        .HasForeignKey("DynamicUserInfoUserId1");
+
+                    b.HasOne("ModuloGameServer.Models.User", "User1")
+                        .WithMany()
+                        .HasForeignKey("User1Id");
+
+                    b.HasOne("ModuloGameServer.Models.User", "User2")
+                        .WithMany()
+                        .HasForeignKey("User2Id");
+
+                    b.Navigation("User1");
+
+                    b.Navigation("User2");
+                });
+
+            modelBuilder.Entity("ModuloGameServer.Models.GameRound", b =>
+                {
+                    b.HasOne("ModuloGameServer.Models.Game", "Game")
+                        .WithMany("Rounds")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ModuloGameServer.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ModuloGameServer.Models.DynamicUserInfo", b =>
+                {
+                    b.Navigation("ActiveGameList");
+
+                    b.Navigation("RecentGameList");
+                });
+
+            modelBuilder.Entity("ModuloGameServer.Models.Game", b =>
+                {
+                    b.Navigation("Rounds");
+                });
+
+            modelBuilder.Entity("ModuloGameServer.Models.User", b =>
+                {
+                    b.Navigation("DynamicUserInfo");
                 });
 #pragma warning restore 612, 618
         }

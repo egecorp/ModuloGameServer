@@ -1,4 +1,7 @@
-﻿using ModuloGameServer.Models;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using ModuloGameServer.Models;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ModuloGameServer.Contracts
 {
@@ -9,14 +12,13 @@ namespace ModuloGameServer.Contracts
 
         IDataSourceUser DataSourceUser { get; }
 
-        //Task<Device> GetDevice(int Id, CancellationToken cancellationToken);
 
-        //Task<Device> GetDevice(Guid DeviceToken, CancellationToken cancellationToken);
+        Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken);
 
-        //Task<IEnumerable<Device>> GetDevices(CancellationToken cancellationToken);
+        Task CoommitTransaction(CancellationToken cancellationToken);
 
-        //  Task<User> GetUser(int Id, CancellationToken cancellationToken);
+        Task RollbackTransaction(CancellationToken cancellationToken);
+        
 
-        //Task<Game> GetGame(int Id, CancellationToken cancellationToken);
     }
 }

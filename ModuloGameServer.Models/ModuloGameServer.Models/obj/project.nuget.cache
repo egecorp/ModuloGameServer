@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ei9lC/mLxoq63ZgTf1pG+V1wJA7cqXmT6QPowvCFSo4i54267nFf8DsH8+VI4y4JucWZyeX3hE81FKFO78qRlQ==",
+  "dgSpecHash": "oBiX2SgfhJ75vi+cbmna1vOllKTTD+yI9kK9NjHW7YQ88mCAYir1+eQmxSk/+C7K0B6Ec2iVX5JZM4Xryq8+hg==",
   "success": true,
-  "projectFilePath": "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\ModuloGameServer.Models.csproj",
+  "projectFilePath": "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\ModuloGameServer.Models.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

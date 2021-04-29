@@ -32,17 +32,21 @@ namespace ModuloGameServer.Models
         /// </summary>
         public string TNumber { set; get; }
 
+        /// <summary>
+        /// Страна пользователя
+        /// </summary>
+        public string Country { set; get; }
 
 
         /// <summary>
         /// Идентификатор устройства
         /// </summary>
-        public int DeviceId { set; get; }
+//        public int DeviceId { set; get; }
 
         /// <summary>
         /// Рабочий токен для обращений к серверу
         /// </summary>
-        public string WorkToken { set; get; }
+        public string DeviceWorkToken { set; get; }
 
         public RequestUser()
         {

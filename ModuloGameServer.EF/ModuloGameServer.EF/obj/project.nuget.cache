@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7s4jZBRI1LokRqzUEX94Ob4+01popvmJdCCrVx6Dp4LxUNBJ1UOcRuE1iF8sayezSV9yPZjKjXqpNh9upezEWQ==",
+  "dgSpecHash": "Ow8/M5j7/in1aZNxw3ZrntU0EtvDPNqDWgVMoObK1UHufaK23R9KzzRhCTYkSvrEAmbOfsmPJrfkWLPPg4fbFg==",
   "success": true,
-  "projectFilePath": "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.EF\\ModuloGameServer.EF\\ModuloGameServer.EF.csproj",
+  "projectFilePath": "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.EF\\ModuloGameServer.EF\\ModuloGameServer.EF.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Ege\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Ege\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",

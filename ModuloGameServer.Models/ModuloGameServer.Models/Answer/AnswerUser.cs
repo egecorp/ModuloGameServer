@@ -59,6 +59,8 @@ namespace ModuloGameServer.Models
         /// </summary>
         public DateTime? BlockedUntil { set; get; }
 
+        public DynamicUserInfo DynamicUserInfo { set; get; }
+
         public AnswerUser(User u)
         {
             Id = u.Id;
@@ -66,11 +68,12 @@ namespace ModuloGameServer.Models
             Birthday = u.Birthday;
             EMail = u.EMail;
             TNumber = u.TNumber;
-            VerifyLastRequestStamp = u.VerifyLastRequestStamp;
+            //VerifyLastRequestStamp = u.VerifyLastRequestStamp;
             IsAnonim = u.IsAnonim;
             IsVerified = u.IsVerified;
             IsBlocked = u.IsBlocked;
             BlockedUntil = u.BlockedUntil;
+            DynamicUserInfo = u.DynamicUserInfo;
         }
 
         /// <summary>

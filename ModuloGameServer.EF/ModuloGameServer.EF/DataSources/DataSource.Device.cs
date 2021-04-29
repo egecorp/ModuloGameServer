@@ -58,7 +58,14 @@ namespace ModuloGameServer.Models
             return await Task.FromResult<bool>(true);
         }
 
-
+        /// <summary>
+        /// Изменяет устройство в базе
+        /// </summary>
+        public async Task ChangeDevice(Device existsDevice, CancellationToken cancellationToken)
+        {
+            context.Set<Device>().Update(existsDevice);
+            await context.SaveChangesAsync(cancellationToken);
+        }
 
     }
 }

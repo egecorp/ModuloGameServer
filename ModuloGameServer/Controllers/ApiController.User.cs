@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using ModuloGameServer.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -71,6 +74,8 @@ namespace ModuloGameServer.Controllers
 
                 string workToken = Tokens.AddDevice(ad);
 
+                Thread.Sleep(2000);
+
                 return JsonConvert.SerializeObject(ad);
             }
             catch (Exception e)
@@ -104,9 +109,14 @@ namespace ModuloGameServer.Controllers
 
                 if (!existDevice.UserId.HasValue) return await JsonErrorAsync("No user");
 
-                User u = await DBService.DataSourceUser.GetUser(existDevice.UserId.Value, cancellationToken);
+                User u = await DBService.DataSourceUser.GetUserInfo(existDevice.UserId.Value, cancellationToken);
 
                 if (u == null) return await JsonErrorAsync("User not found");
+
+                if (u.DynamicUserInfo == null)
+                {
+                    return await JsonErrorAsync("UserInfo not found");
+                }
 
                 AnswerUser au = new AnswerUser(u);
 
@@ -114,8 +124,7 @@ namespace ModuloGameServer.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
                 return await JsonErrorAsync("Server Error");
             }
 
@@ -126,12 +135,13 @@ namespace ModuloGameServer.Controllers
         /// </summary>
         public async Task<string> CreateAnonimUser([FromBody] RequestUser ru, CancellationToken cancellationToken)
         {
+            await this.DBService.BeginTransaction(cancellationToken);
 
             try
             {
                 if (ru == null) return await JsonErrorAsync("No request");
 
-                int? deviceId = Tokens.GetDeviceId(ru.WorkToken);
+                int? deviceId = Tokens.GetDeviceId(ru.DeviceWorkToken);
 
                 if (!deviceId.HasValue) return await JsonErrorAsync("Access denied");
 
@@ -143,35 +153,34 @@ namespace ModuloGameServer.Controllers
 
                 if (existDevice.UserId.HasValue) return await JsonErrorAsync("Device already bind to user");
 
-                /*
-                                User existsUser = DBService.DataSourceDevice.GetUserByEmail(ru.EMail.ToLower().Trim());
-
-                                if (existsUser != null) return await JsonErrorAsync("Email already exists");
-                */
-
 
                 User u = new User()
                 {
                     IsAnonim = true
-
                 };
-                DBService.DataSourceUser.AddUser(u, cancellationToken);
+                await DBService.DataSourceUser.AddUser(u, cancellationToken);
 
                 if (u.Id <= 0) return await JsonErrorAsync("DataBase ERROR");
 
-
                 u.NicName = "Anonim" + u.Id.ToString();
 
-                DBService.DataSourceUser.ChangeUser(u, cancellationToken);
+                await DBService.DataSourceUser.ChangeUser(u, cancellationToken);
+
+                existDevice.UserId = u.Id;
+
+                await DBService.DataSourceDevice.ChangeDevice(existDevice, cancellationToken);
 
                 AnswerUser au = new AnswerUser(u);
 
+                await this.DBService.CoommitTransaction(cancellationToken);
+
                 return JsonConvert.SerializeObject(au);
+
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                await this.DBService.RollbackTransaction(cancellationToken);
                 return await JsonErrorAsync("Server Error");
             }
         }
@@ -181,9 +190,76 @@ namespace ModuloGameServer.Controllers
         /// и отправить код авторизации
         /// Возвращается постоянный токен устройства
         /// </summary>
-        public string CreateVerifiedUser([FromBody] RequestUser ru, CancellationToken cancellationToken)
+        public async Task<string> CreateVerifiedUser([FromBody] RequestUser ru, CancellationToken cancellationToken)
         {
-            return "Error";
+            await this.DBService.BeginTransaction(cancellationToken);
+
+            try
+            {
+                if (ru == null) return await JsonErrorAsync(SERVER_ERROR.BAD_DATA);
+
+                int? deviceId = Tokens.GetDeviceId(ru.DeviceWorkToken);
+
+                if (!deviceId.HasValue) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                Device existDevice = await DBService.DataSourceDevice.GetDevice(deviceId.Value, cancellationToken);
+
+                if (existDevice == null) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                if (existDevice.IsDisabled == true) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                if (existDevice.UserId.HasValue) return await JsonErrorAsync(SERVER_ERROR.SIGNUP_ALREADY_BOUND);
+
+                User u = new User()
+                {
+                    IsAnonim = false,
+                    EMail = ru.EMail.ToLower(),
+                    TNumber = ru.TNumber,
+                    NicName = ru.NicName,
+                    Birthday = ru.Birthday,
+                };
+
+                if (!CheckEmail(u.EMail)) return await JsonErrorAsync(SERVER_ERROR.SIGNUP_BAD_EMAIL, true);
+
+                if ((u.NicName ?? "").Length < 2) return await JsonErrorAsync(SERVER_ERROR.SIGNUP_BAD_NICKNAME, true);
+
+
+                User existsUser = await DBService.DataSourceUser.GetUserByEmail(u.EMail, cancellationToken);
+
+
+                if (existsUser != null) return await JsonErrorAsync(SERVER_ERROR.SIGNUP_EMAIL_EXISTS, true);
+
+                //FindUsersByNic
+
+
+                await DBService.DataSourceUser.AddUser(u, cancellationToken);
+
+
+
+                if (u.Id <= 0) return await JsonErrorAsync(SERVER_ERROR.SERVER_ERROR);
+
+                u.NicName = "Anonim" + u.Id.ToString();
+
+                await DBService.DataSourceUser.ChangeUser(u, cancellationToken);
+
+                existDevice.UserId = u.Id;
+
+                await DBService.DataSourceDevice.ChangeDevice(existDevice, cancellationToken);
+
+                AnswerUser au = new AnswerUser(u);
+
+                await this.DBService.CoommitTransaction(cancellationToken);
+
+                return JsonConvert.SerializeObject(au);
+
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                await this.DBService.RollbackTransaction(cancellationToken);
+                return await JsonErrorAsync(SERVER_ERROR.SERVER_ERROR);
+            }
+
         }
 
 
@@ -247,6 +323,60 @@ namespace ModuloGameServer.Controllers
         public string SetUserInfo()
         {
             return "Error";
+        }
+
+
+
+        /// <summary>
+        /// Найти пользователя по нику
+        /// </summary>
+        public async Task<string> FindUsersByNick([FromBody] RequestUserFinder rd, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (rd == null) return await JsonErrorAsync("No request");
+
+                int? deviceId = Tokens.GetDeviceId(rd.DeviceWorkToken);
+
+                if (!deviceId.HasValue) return await JsonErrorAsync("Access denied");
+                
+                Device existDevice = await DBService.DataSourceDevice.GetDevice(deviceId.Value, cancellationToken);
+
+                if (existDevice == null) return await JsonErrorAsync("Access denied");
+
+                if (existDevice.IsDisabled == true) return await JsonErrorAsync("Device is disabled");
+
+                if (!existDevice.UserId.HasValue) return await JsonErrorAsync("No user");
+
+                User u = await DBService.DataSourceUser.GetUserInfo(existDevice.UserId.Value, cancellationToken);
+
+                if (u == null) return await JsonErrorAsync("User not found");
+
+                if (u.DynamicUserInfo == null)
+                {
+                    return await JsonErrorAsync("UserInfo not found");
+                }
+
+                List<User> userList = await DBService.DataSourceUser.FindUsersByNic(rd.NicName, cancellationToken);
+                
+
+                return JsonConvert.SerializeObject(userList);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                return await JsonErrorAsync("Server Error");
+            }
+
+        }
+
+
+        private bool CheckEmail(string email)
+        {
+            Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+            Match match = regex.Match(email);
+            return match.Success;
+
         }
 
 

@@ -15,11 +15,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\ModuloGameServer.Models.csproj",
+      "projectUniqueName": "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\ModuloGameServer.Models.csproj",
       "projectName": "ModuloGameServer.Models",
-      "projectPath": "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\ModuloGameServer.Models.csproj",
+      "projectPath": "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\ModuloGameServer.Models.csproj",
       "packagesPath": "C:\\Users\\Ege\\.nuget\\packages\\",
-      "outputPath": "F:\\ModuloGameServer\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\obj\\",
+      "outputPath": "D:\\DevModulo\\ModuloGameServer\\ModuloGameServer.Models\\ModuloGameServer.Models\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",

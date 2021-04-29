@@ -1,4 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace ModuloGameServer.Models
 {
 
@@ -13,6 +17,7 @@ namespace ModuloGameServer.Models
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
         }
+
 
 
         /*

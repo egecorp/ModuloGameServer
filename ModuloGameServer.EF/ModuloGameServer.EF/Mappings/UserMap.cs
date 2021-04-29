@@ -16,11 +16,13 @@ namespace ModuloGameServer.Models
 
             builder.HasKey(x => x.Id);
 
+            builder.Property(x => x.Id).UseIdentityColumn();
             builder.Property(x => x.EMail).HasMaxLength(1024);
             builder.Property(x => x.NicName).HasMaxLength(256);
 
             builder.Property(x => x.VerifyCode).HasMaxLength(6);
-            ;
+
+            builder.HasOne(x => x.DynamicUserInfo).WithOne().HasForeignKey<DynamicUserInfo>(y => y.UserId);
         }
 
     }
