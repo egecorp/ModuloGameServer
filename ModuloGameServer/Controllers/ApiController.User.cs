@@ -348,19 +348,20 @@ namespace ModuloGameServer.Controllers
 
                 if (!existDevice.UserId.HasValue) return await JsonErrorAsync("No user");
 
-                User u = await DBService.DataSourceUser.GetUserInfo(existDevice.UserId.Value, cancellationToken);
+                User currentUser = await DBService.DataSourceUser.GetUserInfo(existDevice.UserId.Value, cancellationToken);
 
-                if (u == null) return await JsonErrorAsync("User not found");
+                if (currentUser == null) return await JsonErrorAsync("User not found");
 
-                if (u.DynamicUserInfo == null)
+                if (currentUser.DynamicUserInfo == null)
                 {
                     return await JsonErrorAsync("UserInfo not found");
                 }
 
                 List<User> userList = await DBService.DataSourceUser.FindUsersByNic(rd.NicName, cancellationToken);
-                
 
-                return JsonConvert.SerializeObject(userList);
+                AnswerUserList result = new AnswerUserList(userList, currentUser);
+
+                return JsonConvert.SerializeObject(result);
             }
             catch (Exception e)
             {
