@@ -75,7 +75,14 @@ namespace ModuloGameServer.Models
         /// <summary>
         /// Динамические данные пользователя
         /// </summary>
-        public DynamicUserInfo DynamicUserInfo { set; get;}
+        public DynamicUserInfo DynamicUserInfo { set; get; }
+
+
+        /// <summary>
+        /// Делимитор для отделения ника от ID
+        /// </summary>
+        public const string NICNAME_ID_DELIMITER = "&!&";
+
 
 
     }

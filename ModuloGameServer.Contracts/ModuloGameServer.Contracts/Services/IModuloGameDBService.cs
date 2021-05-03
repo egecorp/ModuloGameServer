@@ -12,6 +12,8 @@ namespace ModuloGameServer.Contracts
 
         IDataSourceUser DataSourceUser { get; }
 
+        IDataSourceGame DataSourceGame { get; }
+
 
         Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken);
 

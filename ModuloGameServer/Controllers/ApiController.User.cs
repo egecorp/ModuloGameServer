@@ -4,6 +4,7 @@ using ModuloGameServer.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -238,7 +239,7 @@ namespace ModuloGameServer.Controllers
 
                 if (u.Id <= 0) return await JsonErrorAsync(SERVER_ERROR.SERVER_ERROR);
 
-                u.NicName = "Anonim" + u.Id.ToString();
+                u.NicName = u.NicName + Models.User.NICNAME_ID_DELIMITER + u.Id.ToString("000000");
 
                 await DBService.DataSourceUser.ChangeUser(u, cancellationToken);
 
@@ -358,6 +359,8 @@ namespace ModuloGameServer.Controllers
                 }
 
                 List<User> userList = await DBService.DataSourceUser.FindUsersByNic(rd.NicName, cancellationToken);
+                userList = (userList ?? new List<User>()).Where(x => x.Id != currentUser.Id).ToList();
+
 
                 AnswerUserList result = new AnswerUserList(userList, currentUser);
 

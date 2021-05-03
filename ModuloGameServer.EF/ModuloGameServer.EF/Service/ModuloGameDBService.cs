@@ -29,15 +29,22 @@ namespace ModuloGameServer.Contracts
             }
         }
 
+        private IDataSourceGame myDataSourceGame = null;
+        public IDataSourceGame DataSourceGame
+        {
+            get
+            {
+                return (myDataSourceGame == null) ? (myDataSourceGame = new DataSourceGame(context)) : myDataSourceGame;
+            }
+        }
+
+
+
         public ModuloGameDBService(ModuloGameDBContext dbContext)
         {
             context = dbContext;
         }
 
-        public async Task<Game> GetGame(int Id, CancellationToken cancellationToken)
-        {
-            return await context.Set<Game>().FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
-        }
 
         public async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken)
         {
