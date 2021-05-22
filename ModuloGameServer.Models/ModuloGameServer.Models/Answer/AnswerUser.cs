@@ -59,7 +59,7 @@ namespace ModuloGameServer.Models
         /// </summary>
         public DateTime? BlockedUntil { set; get; }
 
-        public DynamicUserInfo DynamicUserInfo { set; get; }
+        public AnswerDynamicUserInfo DynamicUserInfo { set; get; }
 
         public AnswerUser(User u)
         {
@@ -73,7 +73,7 @@ namespace ModuloGameServer.Models
             IsVerified = u.IsVerified;
             IsBlocked = u.IsBlocked;
             BlockedUntil = u.BlockedUntil;
-            DynamicUserInfo = u.DynamicUserInfo;
+            DynamicUserInfo = new AnswerDynamicUserInfo(u.DynamicUserInfo);
         }
 
         /// <summary>

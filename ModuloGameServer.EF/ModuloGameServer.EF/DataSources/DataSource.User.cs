@@ -80,14 +80,16 @@ namespace ModuloGameServer.Models
 
         public async Task<User> GetUserInfo(int UserId, CancellationToken cancellationToken)
         {
-            User u =  await context.Set<User>().Include(x => x.DynamicUserInfo).FirstOrDefaultAsync(x => x.Id == UserId, cancellationToken);
+            User u = await context.Set<User>().Include(x => x.DynamicUserInfo).FirstOrDefaultAsync(x => x.Id == UserId, cancellationToken);
 
             if (u.DynamicUserInfo != null)
             {
 
                 u.DynamicUserInfo.RecentGameList = await context
                                                         .Set<Game>()
-                                                        .Where(x => x.IsCancel || x.IsFinish || x.IsTimeout)
+                                                        .Include(x => x.User1)
+                                                        .Include(x => x.User2)
+                                                        .Where(x => ((x.User1Id == UserId) || (x.User2Id == UserId)) && (x.IsCancel || x.IsFinish || x.IsTimeout || x.IsDeclined))
                                                         .OrderBy(x => x.StartStamp)
                                                         .Take(MAX_RECENT_GAME_COUNT)
                                                         .ToListAsync(cancellationToken);
@@ -95,9 +97,22 @@ namespace ModuloGameServer.Models
 
                 u.DynamicUserInfo.ActiveGameList = await context
                                                         .Set<Game>()
-                                                        .Where(x => !x.IsCancel && !x.IsFinish && !x.IsTimeout)
+                                                        .Include(x => x.User1)
+                                                        .Include(x => x.User2)
+                                                        .Where(x => ((x.User1Id == UserId) || (x.User2Id == UserId)) && !(x.IsCancel || x.IsFinish || x.IsTimeout || x.IsDeclined))
                                                         .OrderBy(x => x.StartStamp)
                                                         .ToListAsync(cancellationToken);
+                
+                List<int> gameIds = u.DynamicUserInfo.ActiveGameList.Select(x => x.Id).ToList();
+
+                List<GameRound> gameRounds = await context.Set<GameRound>().Where(x => gameIds.Contains((x.GameId)))
+                    .ToListAsync(cancellationToken);
+
+                foreach (Game g in u.DynamicUserInfo.ActiveGameList)
+                {
+                    g.Rounds = gameRounds.Where(x => x.GameId == g.Id).ToList();
+                }
+
             }
 
 
@@ -113,6 +128,8 @@ namespace ModuloGameServer.Models
 
             return await GetUser(dynamicUserInfo.UserId, cancellationToken);
         }
+
+
 
     }
 }

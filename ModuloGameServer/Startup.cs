@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using ModuloGameServer.Contracts;
 using ModuloGameServer.Models;
 
@@ -45,7 +47,7 @@ namespace ModuloGameServer
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            if (env.IsDevelopment())
+            if (true || env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -65,6 +67,13 @@ namespace ModuloGameServer
             app.UseAuthorization();
 
 
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+            });
+
+            ILogger logger = loggerFactory.CreateLogger<Startup>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -74,6 +83,17 @@ namespace ModuloGameServer
                 endpoints.MapControllerRoute(
                     name: "api",
                     pattern: "API/{controller}/{action}");
+
+                endpoints.MapGet(@".well-known/pki-validation/0367EA235D6369120E51F1DA3B74C1D8.txt", async context =>
+                {
+                    await context.Response.WriteAsync(@"D6D4805252C5F63150FC381B3EAD9C7F441F7F26D5CBAC0C0C5B04DA21149512
+comodoca.com
+46d3517eb12e1ab");
+                });
+                 
+                    
+
+
             });
         }
     }

@@ -22,9 +22,15 @@ namespace ModuloGameServer.Models
         /// <param name="Id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Game> GetGame(int Id, CancellationToken cancellationToken)
+        public async Task<Game> GetGame(int Id, bool withRounds, CancellationToken cancellationToken)
         {
-            return await context.Set<Game>().FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+            Game game = await context.Set<Game>().FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+            if ((game != null) && withRounds)
+            {
+                game.Rounds = await context.Set<GameRound>().Where(x => x.GameId == game.Id)
+                    .ToListAsync(cancellationToken);
+            }
+            return game;
         }
 
 
@@ -43,7 +49,7 @@ namespace ModuloGameServer.Models
                                     (x.User1Id == newGame.User1Id) && (x.User2Id == newGame.User2Id) ||
                                     (x.User1Id == newGame.User2Id) && (x.User2Id == newGame.User1Id)
                                 )
-                                && !(x.IsCancel || x.IsFinish || x.IsTimeout)
+                                && !(x.IsCancel || x.IsFinish || x.IsTimeout || x.IsDeclined || x.IsGiveUp)
                             );
 
                         if (existsGameIsExists)
@@ -52,6 +58,7 @@ namespace ModuloGameServer.Models
                             throw new Exception("Game with this users is already exists");
                         }
 
+                        newGame.UpdateStatus();
                         await context.Set<Game>().AddAsync(newGame, cancellationToken);
                         await context.SaveChangesAsync(cancellationToken);
                         return true;
@@ -69,10 +76,36 @@ namespace ModuloGameServer.Models
         /// </summary>
         public async Task ChangeGame(Game newGame, CancellationToken cancellationToken)
         {
+            newGame.UpdateStatus();
             context.Set<Game>().Update(newGame);
             await context.SaveChangesAsync(cancellationToken);
         }
 
 
+        public async Task PlayRound(Game game, GameRound newGameRound, CancellationToken cancellationToken)
+        {
+            await InTransaction(async () =>
+            {
+                try
+                {
+                    await context.Set<GameRound>().AddAsync(newGameRound);
+                    await context.SaveChangesAsync(cancellationToken);
+                    game.Rounds = await context.Set<GameRound>().Where(x => x.GameId == game.Id).ToListAsync(cancellationToken);
+                    game.UpdateStatus();
+                    await context.SaveChangesAsync(cancellationToken);
+
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    return false;
+                }
+            }, cancellationToken);
+
+
+
+
+        }
     }
 }

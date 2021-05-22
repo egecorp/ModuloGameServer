@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ModuloGameServer.Models;
 
 namespace ModuloGameServer.EF.Migrations
 {
     [DbContext(typeof(ModuloGameDBContext))]
-    partial class ModuloGameDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210511064251_AddGiveUp")]
+    partial class AddGiveUp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,9 +74,6 @@ namespace ModuloGameServer.EF.Migrations
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeclined")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsFinish")
                         .HasColumnType("bit");
 
@@ -87,40 +86,16 @@ namespace ModuloGameServer.EF.Migrations
                     b.Property<bool>("IsTimeout")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("LastRoundStamp")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("MinutesPerRound")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartStamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
                     b.Property<int?>("User1Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("User1MaxRoundNumber")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<int>("User1Score")
-                        .HasColumnType("int");
-
                     b.Property<int?>("User2Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("User2MaxRoundNumber")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<int>("User2Score")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

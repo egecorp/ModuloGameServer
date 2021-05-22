@@ -14,6 +14,7 @@ namespace ModuloGameServer.Controllers
 
         public IActionResult Index()
         {
+            _logger.LogInformation("Homecontroller is called");
             return View();
         }
 
