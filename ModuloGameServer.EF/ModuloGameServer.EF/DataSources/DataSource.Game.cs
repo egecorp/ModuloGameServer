@@ -81,7 +81,29 @@ namespace ModuloGameServer.Models
             await context.SaveChangesAsync(cancellationToken);
         }
 
+        
+        public async Task UpdateGameStatus(Game game, CancellationToken cancellationToken)
+        {
+            await InTransaction(async () =>
+            {
+                try
+                {
+                    game.Rounds = await context.Set<GameRound>().Where(x => x.GameId == game.Id).ToListAsync(cancellationToken);
+                    game.UpdateStatus();
+                    await context.SaveChangesAsync(cancellationToken);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    return false;
+                }
+            }, cancellationToken);
 
+
+
+
+        }
         public async Task PlayRound(Game game, GameRound newGameRound, CancellationToken cancellationToken)
         {
             await InTransaction(async () =>

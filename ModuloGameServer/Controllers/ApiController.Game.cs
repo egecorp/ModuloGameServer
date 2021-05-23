@@ -318,7 +318,7 @@ namespace ModuloGameServer.Controllers
                 GameRound newGameRound = null;
                 if (isFirstGamer)
                 {
-                    if (game.CanUseJoker(true) && ((d1 == Game.JOKER)  || (d2 == Game.JOKER) || (d3 == Game.JOKER))) return await JsonErrorAsync("Can not use joker");
+                    if (!game.CanUseJoker(true) && ((d1 == Game.JOKER)  || (d2 == Game.JOKER) || (d3 == Game.JOKER))) return await JsonErrorAsync("Can not use joker");
 
                     
                     if ((game.Status == GAME_STATUS.GAME_ROUND_1_NOUSER) ||
@@ -352,7 +352,12 @@ namespace ModuloGameServer.Controllers
                     else if ((game.Status == GAME_STATUS.GAME_ROUND_5_NOUSER) ||
                              (game.Status == GAME_STATUS.GAME_ROUND_5_USER2_DONE))
                     {
-                        if (rg.RoundNumber != 5) return await JsonErrorAsync("Wrong round number");
+                        if (rg.RoundNumber != 5)
+                        {
+                            // TODO подумать, как этого костыля избежать
+                            await DBService.DataSourceGame.UpdateGameStatus(game, cancellationToken); 
+                            return await JsonErrorAsync("Wrong round number");
+                        }
                         newGameRound = new GameRound()
                             {UserId = game.User1Id.Value, Digit1 = d1, Digit2 = d2, Digit3 = d3, RoundNumber = 5};
                     }
@@ -361,7 +366,7 @@ namespace ModuloGameServer.Controllers
                 }
                 else
                 {
-                    if (game.CanUseJoker(false) && ((d1 == Game.JOKER) || (d2 == Game.JOKER) || (d3 == Game.JOKER))) return await JsonErrorAsync("Can not use joker");
+                    if (!game.CanUseJoker(false) && ((d1 == Game.JOKER) || (d2 == Game.JOKER) || (d3 == Game.JOKER))) return await JsonErrorAsync("Can not use joker");
 
                     if ((game.Status == GAME_STATUS.GAME_ROUND_1_NOUSER) ||
                         (game.Status == GAME_STATUS.GAME_ROUND_1_USER1_DONE))
@@ -394,7 +399,13 @@ namespace ModuloGameServer.Controllers
                     else if ((game.Status == GAME_STATUS.GAME_ROUND_5_NOUSER) ||
                              (game.Status == GAME_STATUS.GAME_ROUND_5_USER1_DONE))
                     {
-                        if (rg.RoundNumber != 5) return await JsonErrorAsync("Wrong round number");
+                        if (rg.RoundNumber != 5)
+                        {
+                            // TODO подумать, как этого костыля избежать
+                            await DBService.DataSourceGame.UpdateGameStatus(game, cancellationToken);
+                            return await JsonErrorAsync("Wrong round number");
+                        }
+                        
                         newGameRound = new GameRound()
                         { UserId = game.User2Id.Value, Digit1 = d1, Digit2 = d2, Digit3 = d3, RoundNumber = 5 };
                     }
@@ -422,7 +433,154 @@ namespace ModuloGameServer.Controllers
         /// </summary>
         public async Task<string> PlayRoundGiveUp([FromBody] RequestGame rg, CancellationToken cancellationToken)
         {
-            return "Error";
+            try
+            {
+                if (rg == null) return await JsonErrorAsync("No request");
+                if (!rg.Id.HasValue) return await JsonErrorAsync("Bad request");
+
+                CheckedUser cu = await CheckCurrentUser(rg.DeviceWorkToken, cancellationToken);
+                if (cu.ErrorString != null) return cu.ErrorString;
+
+                Game game = await DBService.DataSourceGame.GetGame(rg.Id.Value, true, cancellationToken);
+                if (game == null) return await JsonErrorAsync("Game not found");
+
+                bool isFirstGamer;
+
+                if (game.User1Id == cu.User.Id)
+                {
+                    isFirstGamer = true;
+                }
+                else if (game.User2Id == cu.User.Id)
+                {
+                    isFirstGamer = false;
+                }
+                else
+                {
+                    return await JsonErrorAsync("Bad gamer");
+                }
+
+                if (!game.IsStart) return await JsonErrorAsync("Game wasn't accepted yet");
+
+                if (game.IsCancel) return await JsonErrorAsync("Game was canceled");
+                if (game.IsGiveUp) return await JsonErrorAsync("Game was gave up");
+                if (game.IsDeclined) return await JsonErrorAsync("Game was already declined");
+                if (game.IsTimeout) return await JsonErrorAsync("Game was canceled by timeout");
+                if (game.IsFinish) return await JsonErrorAsync("Game was already finished");
+
+
+
+                bool canPlayRound = (
+                    (game.Status == GAME_STATUS.GAME_ROUND_1_NOUSER) ||
+                    (game.Status == GAME_STATUS.GAME_ROUND_2_NOUSER) ||
+                    (game.Status == GAME_STATUS.GAME_ROUND_3_NOUSER) ||
+                    (game.Status == GAME_STATUS.GAME_ROUND_4_NOUSER) ||
+                    (game.Status == GAME_STATUS.GAME_ROUND_5_NOUSER)
+                );
+
+                if (isFirstGamer && !canPlayRound)
+                {
+                    canPlayRound = (game.Status == GAME_STATUS.GAME_ROUND_1_USER2_DONE) ||
+                                   (game.Status == GAME_STATUS.GAME_ROUND_2_USER2_DONE) ||
+                                   (game.Status == GAME_STATUS.GAME_ROUND_3_USER2_DONE) ||
+                                   (game.Status == GAME_STATUS.GAME_ROUND_4_USER2_DONE) ||
+                                   (game.Status == GAME_STATUS.GAME_ROUND_5_USER2_DONE);
+
+                }
+                else if (!isFirstGamer && !canPlayRound)
+                {
+                    canPlayRound = (game.Status == GAME_STATUS.GAME_ROUND_1_USER1_DONE) ||
+                                   (game.Status == GAME_STATUS.GAME_ROUND_2_USER1_DONE) ||
+                                   (game.Status == GAME_STATUS.GAME_ROUND_3_USER1_DONE) ||
+                                   (game.Status == GAME_STATUS.GAME_ROUND_4_USER1_DONE) ||
+                                   (game.Status == GAME_STATUS.GAME_ROUND_5_USER1_DONE);
+                }
+
+                if (!canPlayRound) return await JsonErrorAsync("Cannot play round");
+
+                GameRound newGameRound = new GameRound()
+                {
+                     GameId = game.Id,
+                     UserId = cu.User.Id,
+                     UserGiveUp = true
+                };
+
+                if (isFirstGamer)
+                {
+                    if ((game.Status == GAME_STATUS.GAME_ROUND_1_NOUSER) ||
+                        (game.Status == GAME_STATUS.GAME_ROUND_1_USER2_DONE))
+                    {
+                        if (rg.RoundNumber != 1) return await JsonErrorAsync("Wrong round number");
+                        newGameRound.RoundNumber = 1;
+                    }
+                    else if ((game.Status == GAME_STATUS.GAME_ROUND_2_NOUSER) ||
+                             (game.Status == GAME_STATUS.GAME_ROUND_2_USER2_DONE))
+                    {
+                        if (rg.RoundNumber != 2) return await JsonErrorAsync("Wrong round number");
+                        newGameRound.RoundNumber = 2;
+                    }
+                    else if ((game.Status == GAME_STATUS.GAME_ROUND_3_NOUSER) ||
+                             (game.Status == GAME_STATUS.GAME_ROUND_3_USER2_DONE))
+                    {
+                        if (rg.RoundNumber != 3) return await JsonErrorAsync("Wrong round number");
+                        newGameRound.RoundNumber = 3;
+                    }
+                    else if ((game.Status == GAME_STATUS.GAME_ROUND_4_NOUSER) ||
+                             (game.Status == GAME_STATUS.GAME_ROUND_4_USER2_DONE))
+                    {
+                        if (rg.RoundNumber != 4) return await JsonErrorAsync("Wrong round number");
+                        newGameRound.RoundNumber = 4;
+                    }
+                    else if ((game.Status == GAME_STATUS.GAME_ROUND_5_NOUSER) ||
+                             (game.Status == GAME_STATUS.GAME_ROUND_5_USER2_DONE))
+                    {
+                        if (rg.RoundNumber != 5) return await JsonErrorAsync("Wrong round number");
+                        newGameRound.RoundNumber = 5;
+                    }
+                }
+                else
+                {
+                    if ((game.Status == GAME_STATUS.GAME_ROUND_1_NOUSER) ||
+                        (game.Status == GAME_STATUS.GAME_ROUND_1_USER1_DONE))
+                    {
+                        if (rg.RoundNumber != 1) return await JsonErrorAsync("Wrong round number");
+                        newGameRound.RoundNumber = 1;
+                    }
+                    else if ((game.Status == GAME_STATUS.GAME_ROUND_2_NOUSER) ||
+                             (game.Status == GAME_STATUS.GAME_ROUND_2_USER1_DONE))
+                    {
+                        if (rg.RoundNumber != 2) return await JsonErrorAsync("Wrong round number");
+                        newGameRound.RoundNumber = 2;
+                    }
+                    else if ((game.Status == GAME_STATUS.GAME_ROUND_3_NOUSER) ||
+                             (game.Status == GAME_STATUS.GAME_ROUND_3_USER1_DONE))
+                    {
+                        if (rg.RoundNumber != 3) return await JsonErrorAsync("Wrong round number");
+                        newGameRound.RoundNumber = 3;
+                    }
+                    else if ((game.Status == GAME_STATUS.GAME_ROUND_4_NOUSER) ||
+                             (game.Status == GAME_STATUS.GAME_ROUND_4_USER1_DONE))
+                    {
+                        if (rg.RoundNumber != 4) return await JsonErrorAsync("Wrong round number");
+                        newGameRound.RoundNumber = 4;
+                    }
+                    else if ((game.Status == GAME_STATUS.GAME_ROUND_5_NOUSER) ||
+                             (game.Status == GAME_STATUS.GAME_ROUND_5_USER1_DONE))
+                    {
+                        if (rg.RoundNumber != 5) return await JsonErrorAsync("Wrong round number");
+                        newGameRound.RoundNumber = 5;
+                    }
+                }
+
+                await DBService.DataSourceGame.PlayRound(game, newGameRound, cancellationToken);
+                game = await DBService.DataSourceGame.GetGame(rg.Id.Value, true, cancellationToken);
+                AnswerGame ag = new AnswerGame(game, cu.User.Id, true);
+                return JsonConvert.SerializeObject(ag);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                return await JsonErrorAsync("Server Error");
+            }
         }
 
     }

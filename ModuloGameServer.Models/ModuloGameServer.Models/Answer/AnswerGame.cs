@@ -119,6 +119,18 @@ namespace ModuloGameServer.Models
         /// </summary>
         public int User2MaxRoundNumber { set; get; }
 
+
+        /// <summary>
+        /// Счёт первого игрока
+        /// </summary>
+        public int User1Score { set; get; }
+
+        /// <summary>
+        /// Счёт второго игрока
+        /// </summary>
+        public int User2Score { set; get; }
+
+
         /// <summary>
         /// Список ходов
         /// </summary>
@@ -145,6 +157,9 @@ namespace ModuloGameServer.Models
 
             User1MaxRoundNumber = game.User1MaxRoundNumber;
             User2MaxRoundNumber = game.User2MaxRoundNumber;
+
+            User1Score = game.User1Score;
+            User2Score = game.User2Score;
 
             if (MyUserId == game.User2Id)
             {

@@ -26,7 +26,10 @@ namespace ModuloGameServer.Models
         /// </summary>
         Task ChangeGame(Game newGame, CancellationToken cancellationToken);
 
-
+        /// <summary>
+        /// Обновляет статус игры без изменений
+        /// </summary>
+        Task UpdateGameStatus(Game game, CancellationToken cancellationToken);
 
         /// <summary>
         /// Добавляет сыгранный раунд одного из игроков в базу

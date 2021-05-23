@@ -165,6 +165,8 @@ namespace ModuloGameServer.Models
             GameRound user1MaxRound = this.Rounds.FirstOrDefault(x => (x.UserId == this.User1Id) && (x.RoundNumber == User1MaxRoundNumber));
             GameRound user2MaxRound = this.Rounds.FirstOrDefault(x => (x.UserId == this.User2Id) && (x.RoundNumber == User2MaxRoundNumber));
 
+            if ((user1MaxRound?.UserGiveUp == true) || (user2MaxRound?.UserGiveUp == true)) this.IsGiveUp = true;
+
             this.User1Score = this.Rounds.Where(x => x.UserId == this.User1Id).Sum(x => x.GetScore(this.Rounds.SingleOrDefault(y => (y.UserId == this.User2Id) && (y.RoundNumber == x.RoundNumber))));
             this.User2Score = this.Rounds.Where(x => x.UserId == this.User2Id).Sum(x => x.GetScore(this.Rounds.SingleOrDefault(y => (y.UserId == this.User1Id) && (y.RoundNumber == x.RoundNumber))));
 
@@ -216,6 +218,14 @@ namespace ModuloGameServer.Models
             switch (currentRoundNumber)
             {
                 case 5:
+                    if (user1MaxRound?.RoundNumber == user2MaxRound?.RoundNumber)
+                    {
+                        this.IsFinish = true;
+                        if (this.User1Score > this.User2Score) return this.Status = GAME_STATUS.GAME_FINISH_USER1_WIN;
+                        if (this.User1Score < this.User2Score) return this.Status = GAME_STATUS.GAME_FINISH_USER2_WIN;
+                        return this.Status = GAME_STATUS.GAME_FINISH_USER2_DRAW;
+                    }
+
                     if (user1MaxRound?.RoundNumber == 5) return Status = GAME_STATUS.GAME_ROUND_5_USER1_DONE;
                     if (user2MaxRound?.RoundNumber == 5) return Status = GAME_STATUS.GAME_ROUND_5_USER2_DONE;
                     return Status = GAME_STATUS.GAME_ROUND_5_NOUSER;
