@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ModuloGameServer.Models
+namespace ModuloGameServer.Request
 {
     /// <summary>
     /// Поиск одного пользователя

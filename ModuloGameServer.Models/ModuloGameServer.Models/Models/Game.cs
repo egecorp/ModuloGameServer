@@ -117,6 +117,176 @@ namespace ModuloGameServer.Models
         [JsonIgnore]
         public virtual User User2 { set; get; }
 
+        /// <summary>
+        /// Текущий раунд, который играется
+        /// 0 - игра не началась
+        /// 1..5 - первый или второй игрок играет 1..5 раунд
+        /// 6 - игра окончена
+        /// </summary>
+        public int RoundNumber { set; get; }
+
+        #region Digits
+
+        /// <summary>
+        /// Раунд 1 , игрок 1, позиция 1
+        /// </summary>
+        public int D1_1_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 1 , игрок 1, позиция 2
+        /// </summary>
+        public int D1_1_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 1 , игрок 1, позиция 3
+        /// </summary>
+        public int D1_1_3 { set; get; }
+
+        /// <summary>
+        /// Раунд 1 , игрок 2, позиция 1
+        /// </summary>
+        public int D1_2_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 1 , игрок 2, позиция 2
+        /// </summary>
+        public int D1_2_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 1 , игрок 2, позиция 3
+        /// </summary>
+        public int D1_2_3 { set; get; }
+
+
+
+        /// <summary>
+        /// Раунд 2 , игрок 1, позиция 1
+        /// </summary>
+        public int D2_1_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 2 , игрок 1, позиция 2
+        /// </summary>
+        public int D2_1_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 2 , игрок 1, позиция 3
+        /// </summary>
+        public int D2_1_3 { set; get; }
+
+        /// <summary>
+        /// Раунд 2 , игрок 2, позиция 1
+        /// </summary>
+        public int D2_2_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 2 , игрок 2, позиция 2
+        /// </summary>
+        public int D2_2_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 2 , игрок 2, позиция 3
+        /// </summary>
+        public int D2_2_3 { set; get; }
+
+
+        /// <summary>
+        /// Раунд 3 , игрок 1, позиция 1
+        /// </summary>
+        public int D3_1_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 3 , игрок 1, позиция 2
+        /// </summary>
+        public int D3_1_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 3 , игрок 1, позиция 3
+        /// </summary>
+        public int D3_1_3 { set; get; }
+
+        /// <summary>
+        /// Раунд 3 , игрок 2, позиция 1
+        /// </summary>
+        public int D3_2_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 3 , игрок 2, позиция 2
+        /// </summary>
+        public int D3_2_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 3 , игрок 2, позиция 3
+        /// </summary>
+        public int D3_2_3 { set; get; }
+
+
+
+        /// <summary>
+        /// Раунд 4 , игрок 1, позиция 1
+        /// </summary>
+        public int D4_1_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 4 , игрок 1, позиция 2
+        /// </summary>
+        public int D4_1_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 4 , игрок 1, позиция 3
+        /// </summary>
+        public int D4_1_3 { set; get; }
+
+        /// <summary>
+        /// Раунд 4 , игрок 2, позиция 1
+        /// </summary>
+        public int D4_2_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 4 , игрок 2, позиция 2
+        /// </summary>
+        public int D4_2_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 4 , игрок 2, позиция 3
+        /// </summary>
+        public int D4_2_3 { set; get; }
+
+
+
+        /// <summary>
+        /// Раунд 5 , игрок 1, позиция 1
+        /// </summary>
+        public int D5_1_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 5 , игрок 1, позиция 2
+        /// </summary>
+        public int D5_1_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 5 , игрок 1, позиция 3
+        /// </summary>
+        public int D5_1_3 { set; get; }
+
+        /// <summary>
+        /// Раунд 5 , игрок 2, позиция 1
+        /// </summary>
+        public int D5_2_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 5 , игрок 2, позиция 2
+        /// </summary>
+        public int D5_2_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 5 , игрок 2, позиция 3
+        /// </summary>
+        public int D5_2_3 { set; get; }
+
+
+        #endregion
+
 
 
         //public virtual GameResult Result { set; get; }        

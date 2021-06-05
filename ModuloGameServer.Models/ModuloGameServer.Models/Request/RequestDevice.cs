@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ModuloGameServer.Models
+namespace ModuloGameServer.Request
 {
     /// <summary>
     /// Одно устройство пользователя

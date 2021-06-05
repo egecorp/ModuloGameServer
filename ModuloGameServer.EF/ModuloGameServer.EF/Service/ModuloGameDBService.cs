@@ -39,6 +39,17 @@ namespace ModuloGameServer.Contracts
         }
 
 
+        private IDataSourceBot myDataSourceBot = null;
+        public IDataSourceBot DataSourceBot
+        {
+            get
+            {
+                return (myDataSourceBot == null) ? (myDataSourceBot = new DataSourceBot(context)) : myDataSourceBot;
+            }
+        }
+
+        
+
 
         public ModuloGameDBService(ModuloGameDBContext dbContext)
         {

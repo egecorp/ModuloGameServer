@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ModuloGameServer.Models;
+using ModuloGameServer.Request;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -331,7 +332,7 @@ namespace ModuloGameServer.Controllers
         /// <summary>
         /// Найти пользователя по нику
         /// </summary>
-        public async Task<string> FindUsersByNick([FromBody] RequestUserFinder rd, CancellationToken cancellationToken)
+        public async Task<string> FindUsersByNic([FromBody] RequestUserFinder rd, CancellationToken cancellationToken)
         {
             try
             {
@@ -358,11 +359,64 @@ namespace ModuloGameServer.Controllers
                     return await JsonErrorAsync("UserInfo not found");
                 }
 
+                List<User> userList = ((rd.NicName ?? "").Length > 1) ? (await DBService.DataSourceUser.FindUsersByNic(rd.NicName, cancellationToken)) : new List<User>();
+                userList = (userList ?? new List<User>()).Where(x => !x.IsBot && (x.Id != currentUser.Id)).ToList();
+
+
+                List<User> recentUsers = await DBService.DataSourceUser.GetCompetitors(currentUser.Id, cancellationToken);
+
+                AnswerUserList result = new AnswerUserList(userList, recentUsers, currentUser);
+
+                return JsonConvert.SerializeObject(result);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                return await JsonErrorAsync("Server Error");
+            }
+
+        }
+
+
+
+
+        /// <summary>
+        /// Найти бота по нику
+        /// </summary>
+        public async Task<string> FindBotsByNic([FromBody] RequestUserFinder rd, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (rd == null) return await JsonErrorAsync("No request");
+
+                int? deviceId = Tokens.GetDeviceId(rd.DeviceWorkToken);
+
+                if (!deviceId.HasValue) return await JsonErrorAsync("Access denied");
+
+                Device existDevice = await DBService.DataSourceDevice.GetDevice(deviceId.Value, cancellationToken);
+
+                if (existDevice == null) return await JsonErrorAsync("Access denied");
+
+                if (existDevice.IsDisabled == true) return await JsonErrorAsync("Device is disabled");
+
+                if (!existDevice.UserId.HasValue) return await JsonErrorAsync("No user");
+
+                User currentUser = await DBService.DataSourceUser.GetUserInfo(existDevice.UserId.Value, cancellationToken);
+
+                if (currentUser == null) return await JsonErrorAsync("User not found");
+
+                if (currentUser.DynamicUserInfo == null)
+                {
+                    return await JsonErrorAsync("UserInfo not found");
+                }
+
                 List<User> userList = await DBService.DataSourceUser.FindUsersByNic(rd.NicName, cancellationToken);
-                userList = (userList ?? new List<User>()).Where(x => x.Id != currentUser.Id).ToList();
+                userList = (userList ?? new List<User>()).Where(x => x.IsBot && (x.Id != currentUser.Id)).ToList();
 
+                //TODO выбирать только ботов
+                List<User> recentUsers = await DBService.DataSourceUser.GetCompetitors(currentUser.Id, cancellationToken);
 
-                AnswerUserList result = new AnswerUserList(userList, currentUser);
+                AnswerUserList result = new AnswerUserList(userList, recentUsers, currentUser);
 
                 return JsonConvert.SerializeObject(result);
             }

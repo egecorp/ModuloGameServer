@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace ModuloGameServer.Request
+namespace ModuloGameServer.Request.Bot
 {
     /// <summary>
     /// Одна игра
     /// </summary>
-    public class RequestGame
+    public class RequestBotGame
     {
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace ModuloGameServer.Request
         /// </summary>
         public int? Digit3 { set; get; }
 
-        public RequestGame()
+        public RequestBotGame()
         {
 
         }

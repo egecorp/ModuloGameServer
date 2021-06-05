@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ModuloGameServer.Models;
 
 namespace ModuloGameServer.EF.Migrations
 {
     [DbContext(typeof(ModuloGameDBContext))]
-    partial class ModuloGameDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210603192340_AddDigits")]
+    partial class AddDigits
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,9 +221,6 @@ namespace ModuloGameServer.EF.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("MinutesPerRound")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoundNumber")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartStamp")

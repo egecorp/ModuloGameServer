@@ -60,16 +60,22 @@ namespace ModuloGameServer.Models
         /// </summary>
         public bool IsVerified { set; get; }
 
-
         /// <summary>
         /// Пользователь заблокирован
         /// </summary>
         public bool IsBlocked { set; get; }
 
+
         /// <summary>
         /// Конец автоматической блокировки пользователя
         /// </summary>
         public DateTime? BlockedUntil { set; get; }
+
+
+        /// <summary>
+        /// Пользователь является ботом
+        /// </summary>
+        public bool IsBot { set; get; }
 
 
         /// <summary>

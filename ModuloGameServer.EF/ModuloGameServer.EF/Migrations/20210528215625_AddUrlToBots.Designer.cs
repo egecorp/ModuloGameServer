@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ModuloGameServer.Models;
 
 namespace ModuloGameServer.EF.Migrations
 {
     [DbContext(typeof(ModuloGameDBContext))]
-    partial class ModuloGameDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210528215625_AddUrlToBots")]
+    partial class AddUrlToBots
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,9 +92,6 @@ namespace ModuloGameServer.EF.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CommonRating")
-                        .HasColumnType("int");
-
                     b.HasKey("UserId");
 
                     b.ToTable("DynamicUserInfo");
@@ -106,96 +105,6 @@ namespace ModuloGameServer.EF.Migrations
                         .HasAnnotation("SqlServer:IdentityIncrement", 1)
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("D1_1_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D1_1_2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D1_1_3")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D1_2_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D1_2_2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D1_2_3")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D2_1_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D2_1_2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D2_1_3")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D2_2_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D2_2_2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D2_2_3")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D3_1_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D3_1_2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D3_1_3")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D3_2_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D3_2_2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D3_2_3")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D4_1_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D4_1_2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D4_1_3")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D4_2_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D4_2_2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D4_2_3")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D5_1_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D5_1_2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D5_1_3")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D5_2_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D5_2_2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("D5_2_3")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsCancel")
                         .HasColumnType("bit");
@@ -219,9 +128,6 @@ namespace ModuloGameServer.EF.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("MinutesPerRound")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoundNumber")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartStamp")
@@ -350,43 +256,6 @@ namespace ModuloGameServer.EF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("ModuloGameServer.Models.UserConfirmation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)");
-
-                    b.Property<int>("ConfirmationMethod")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ConfirmationType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DeviceId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ExpiredTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsConfirm")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("SendStamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserConfirmations");
                 });
 
             modelBuilder.Entity("ModuloGameServer.Models.DynamicUserInfo", b =>

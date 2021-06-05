@@ -14,7 +14,10 @@ namespace ModuloGameServer.Models
         /// </summary>
         public int UserId { set; get; }
 
-
+        /// <summary>
+        /// Общий рейтинг пользователя
+        /// </summary>
+        public int CommonRating { set; get; }
 
         /// <summary>
         /// Список активный игр пользователя, в том числе ожидающих подтверждения со стороны пользователя или его соперника 
@@ -31,6 +34,8 @@ namespace ModuloGameServer.Models
         public AnswerDynamicUserInfo(DynamicUserInfo du)
         {
             UserId = du.UserId;
+
+            CommonRating = du.CommonRating;
 
             ActiveGameList = du.ActiveGameList?.Select(x => new AnswerGame(x, this.UserId)).ToList();
 

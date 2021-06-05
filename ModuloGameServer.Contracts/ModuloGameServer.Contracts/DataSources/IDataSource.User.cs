@@ -45,5 +45,11 @@ namespace ModuloGameServer.Models
         /// </summary>
         Task<User> UpdateUserInfo(DynamicUserInfo dynamicUserInfo, CancellationToken cancellationToken);
 
+
+        /// <summary>
+        /// Ищет всех пользователей, с кем играл UserId
+        /// </summary>
+        Task<List<User>> GetCompetitors(int userId, CancellationToken cancellationToken);
+
     }
 }

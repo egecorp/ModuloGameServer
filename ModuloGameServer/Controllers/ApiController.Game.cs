@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ModuloGameServer.Models;
+using ModuloGameServer.Request;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -98,8 +99,6 @@ namespace ModuloGameServer.Controllers
                 {
                     competitor = await DBService.DataSourceUser.GetUser(rg.CompetitorUserId.Value, cancellationToken);
                     if (competitor == null) return await JsonErrorAsync("Competitive user not found");
-
-
                 }
 
                 Game newGame = new Game()
@@ -582,6 +581,7 @@ namespace ModuloGameServer.Controllers
                 return await JsonErrorAsync("Server Error");
             }
         }
+
 
     }
 }

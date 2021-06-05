@@ -13,7 +13,11 @@ namespace ModuloGameServer.Models
         /// </summary>
         public int UserId { set; get; }
 
-        
+        /// <summary>
+        /// Общий рейтинг пользователя
+        /// </summary>
+        public int CommonRating { set; get; }
+
         /// <summary>
         /// Список активный игр пользователя, в том числе ожидающих подтверждения со стороны пользователя или его соперника 
         /// </summary>
@@ -25,5 +29,6 @@ namespace ModuloGameServer.Models
         /// </summary>
         public List<Game> RecentGameList { set; get; }
 
+        public const int COMMON_RATING_DEFAULT = 1500;
     }
 }

@@ -138,6 +138,174 @@ namespace ModuloGameServer.Models
 
         #endregion
 
+
+        /// <summary>
+        /// Текущий раунд
+        /// </summary>
+        public  int RoundNumber { set; get; }
+
+        #region Digits
+
+        /// <summary>
+        /// Раунд 1 , игрок 1, позиция 1
+        /// </summary>
+        public int D1_1_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 1 , игрок 1, позиция 2
+        /// </summary>
+        public int D1_1_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 1 , игрок 1, позиция 3
+        /// </summary>
+        public int D1_1_3 { set; get; }
+
+        /// <summary>
+        /// Раунд 1 , игрок 2, позиция 1
+        /// </summary>
+        public int D1_2_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 1 , игрок 2, позиция 2
+        /// </summary>
+        public int D1_2_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 1 , игрок 2, позиция 3
+        /// </summary>
+        public int D1_2_3 { set; get; }
+
+
+
+        /// <summary>
+        /// Раунд 2 , игрок 1, позиция 1
+        /// </summary>
+        public int D2_1_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 2 , игрок 1, позиция 2
+        /// </summary>
+        public int D2_1_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 2 , игрок 1, позиция 3
+        /// </summary>
+        public int D2_1_3 { set; get; }
+
+        /// <summary>
+        /// Раунд 2 , игрок 2, позиция 1
+        /// </summary>
+        public int D2_2_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 2 , игрок 2, позиция 2
+        /// </summary>
+        public int D2_2_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 2 , игрок 2, позиция 3
+        /// </summary>
+        public int D2_2_3 { set; get; }
+
+
+        /// <summary>
+        /// Раунд 3 , игрок 1, позиция 1
+        /// </summary>
+        public int D3_1_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 3 , игрок 1, позиция 2
+        /// </summary>
+        public int D3_1_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 3 , игрок 1, позиция 3
+        /// </summary>
+        public int D3_1_3 { set; get; }
+
+        /// <summary>
+        /// Раунд 3 , игрок 2, позиция 1
+        /// </summary>
+        public int D3_2_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 3 , игрок 2, позиция 2
+        /// </summary>
+        public int D3_2_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 3 , игрок 2, позиция 3
+        /// </summary>
+        public int D3_2_3 { set; get; }
+
+
+
+        /// <summary>
+        /// Раунд 4 , игрок 1, позиция 1
+        /// </summary>
+        public int D4_1_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 4 , игрок 1, позиция 2
+        /// </summary>
+        public int D4_1_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 4 , игрок 1, позиция 3
+        /// </summary>
+        public int D4_1_3 { set; get; }
+
+        /// <summary>
+        /// Раунд 4 , игрок 2, позиция 1
+        /// </summary>
+        public int D4_2_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 4 , игрок 2, позиция 2
+        /// </summary>
+        public int D4_2_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 4 , игрок 2, позиция 3
+        /// </summary>
+        public int D4_2_3 { set; get; }
+
+
+
+        /// <summary>
+        /// Раунд 5 , игрок 1, позиция 1
+        /// </summary>
+        public int D5_1_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 5 , игрок 1, позиция 2
+        /// </summary>
+        public int D5_1_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 5 , игрок 1, позиция 3
+        /// </summary>
+        public int D5_1_3 { set; get; }
+
+        /// <summary>
+        /// Раунд 5 , игрок 2, позиция 1
+        /// </summary>
+        public int D5_2_1 { set; get; }
+
+        /// <summary>
+        /// Раунд 5 , игрок 2, позиция 2
+        /// </summary>
+        public int D5_2_2 { set; get; }
+
+        /// <summary>
+        /// Раунд 5 , игрок 2, позиция 3
+        /// </summary>
+        public int D5_2_3 { set; get; }
+
+
+        #endregion
+
         public AnswerGame(Game game, int MyUserId)
         {
             Id = game.Id;
@@ -160,6 +328,47 @@ namespace ModuloGameServer.Models
 
             User1Score = game.User1Score;
             User2Score = game.User2Score;
+
+            //TODO посмотреть, как лучше сделать
+            //RoundNumber = game.RoundNumber;
+
+            switch (game.Status)
+            {
+                case GAME_STATUS.GAME_ROUND_1_NOUSER:
+                case GAME_STATUS.GAME_ROUND_1_USER1_DONE:
+                case GAME_STATUS.GAME_ROUND_1_USER2_DONE:
+                    RoundNumber = 1;
+                    break;
+
+                case GAME_STATUS.GAME_ROUND_2_NOUSER:
+                case GAME_STATUS.GAME_ROUND_2_USER1_DONE:
+                case GAME_STATUS.GAME_ROUND_2_USER2_DONE:
+                    RoundNumber = 2;
+                    break;
+
+                case GAME_STATUS.GAME_ROUND_3_NOUSER:
+                case GAME_STATUS.GAME_ROUND_3_USER1_DONE:
+                case GAME_STATUS.GAME_ROUND_3_USER2_DONE:
+                    RoundNumber = 3;
+                    break;
+
+                case GAME_STATUS.GAME_ROUND_4_NOUSER:
+                case GAME_STATUS.GAME_ROUND_4_USER1_DONE:
+                case GAME_STATUS.GAME_ROUND_4_USER2_DONE:
+                    RoundNumber = 4;
+                    break;
+
+                case GAME_STATUS.GAME_ROUND_5_NOUSER:
+                case GAME_STATUS.GAME_ROUND_5_USER1_DONE:
+                case GAME_STATUS.GAME_ROUND_5_USER2_DONE:
+                    RoundNumber = 5;
+                    break;
+                default:
+                    RoundNumber = 0;
+                    break;
+            }
+
+
 
             if (MyUserId == game.User2Id)
             {
@@ -255,10 +464,81 @@ namespace ModuloGameServer.Models
                         this.GameStatus = game.Status;
                         break;
                 }
+
+                D1_1_1 = game.D1_2_1;
+                D1_1_2 = game.D1_2_2;
+                D1_1_3 = game.D1_2_3;
+                D1_2_1 = game.D1_1_1;
+                D1_2_2 = game.D1_1_2;
+                D1_2_3 = game.D1_1_3;
+
+                D2_1_1 = game.D2_2_1;
+                D2_1_2 = game.D2_2_2;
+                D2_1_3 = game.D2_2_3;
+                D2_2_1 = game.D2_1_1;
+                D2_2_2 = game.D2_1_2;
+                D2_2_3 = game.D2_1_3;
+
+                D3_1_1 = game.D3_2_1;
+                D3_1_2 = game.D3_2_2;
+                D3_1_3 = game.D3_2_3;
+                D3_2_1 = game.D3_1_1;
+                D3_2_2 = game.D3_1_2;
+                D3_2_3 = game.D3_1_3;
+
+                D4_1_1 = game.D4_2_1;
+                D4_1_2 = game.D4_2_2;
+                D4_1_3 = game.D4_2_3;
+                D4_2_1 = game.D4_1_1;
+                D4_2_2 = game.D4_1_2;
+                D4_2_3 = game.D4_1_3;
+
+                D5_1_1 = game.D5_2_1;
+                D5_1_2 = game.D5_2_2;
+                D5_1_3 = game.D5_2_3;
+                D5_2_1 = game.D5_1_1;
+                D5_2_2 = game.D5_1_2;
+                D5_2_3 = game.D5_1_3;
             }
             else
             {
                 this.GameStatus = game.Status;
+
+
+                D1_1_1 = game.D1_1_1;
+                D1_1_2 = game.D1_1_2;
+                D1_1_3 = game.D1_1_3;
+                D1_2_1 = game.D1_2_1;
+                D1_2_2 = game.D1_2_2;
+                D1_2_3 = game.D1_2_3;
+
+                D2_1_1 = game.D2_1_1;
+                D2_1_2 = game.D2_1_2;
+                D2_1_3 = game.D2_1_3;
+                D2_2_1 = game.D2_2_1;
+                D2_2_2 = game.D2_2_2;
+                D2_2_3 = game.D2_2_3;
+
+                D3_1_1 = game.D3_1_1;
+                D3_1_2 = game.D3_1_2;
+                D3_1_3 = game.D3_1_3;
+                D3_2_1 = game.D3_2_1;
+                D3_2_2 = game.D3_2_2;
+                D3_2_3 = game.D3_2_3;
+
+                D4_1_1 = game.D4_1_1;
+                D4_1_2 = game.D4_1_2;
+                D4_1_3 = game.D4_1_3;
+                D4_2_1 = game.D4_2_1;
+                D4_2_2 = game.D4_2_2;
+                D4_2_3 = game.D4_2_3;
+
+                D5_1_1 = game.D5_1_1;
+                D5_1_2 = game.D5_1_2;
+                D5_1_3 = game.D5_1_3;
+                D5_2_1 = game.D5_2_1;
+                D5_2_2 = game.D5_2_2;
+                D5_2_3 = game.D5_2_3;
             }
 
             this.Rounds = null;
