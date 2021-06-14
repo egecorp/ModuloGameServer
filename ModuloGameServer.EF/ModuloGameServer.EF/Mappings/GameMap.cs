@@ -22,8 +22,6 @@ namespace ModuloGameServer.Models
 
             builder.HasOne(x => x.User2);
 
-            builder.HasMany(x => x.Rounds).WithOne(x => x.Game).HasForeignKey(x => x.GameId);
-
             builder.Property(x => x.User1MaxRoundNumber).HasDefaultValue(0);
 
             builder.Property(x => x.User2MaxRoundNumber).HasDefaultValue(0);

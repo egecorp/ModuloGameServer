@@ -17,19 +17,14 @@ namespace ModuloGameServer.Models
         }
 
         /// <summary>
-        /// Ищет пользователя по Ud
+        /// Ищет пользователя по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Game> GetGame(int Id, bool withRounds, CancellationToken cancellationToken)
+        public async Task<Game> GetGame(int Id,  CancellationToken cancellationToken)
         {
             Game game = await context.Set<Game>().FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
-            if ((game != null) && withRounds)
-            {
-                game.Rounds = await context.Set<GameRound>().Where(x => x.GameId == game.Id)
-                    .ToListAsync(cancellationToken);
-            }
             return game;
         }
 
@@ -88,7 +83,6 @@ namespace ModuloGameServer.Models
             {
                 try
                 {
-                    game.Rounds = await context.Set<GameRound>().Where(x => x.GameId == game.Id).ToListAsync(cancellationToken);
                     game.UpdateStatus();
                     await context.SaveChangesAsync(cancellationToken);
                     return true;
@@ -99,20 +93,15 @@ namespace ModuloGameServer.Models
                     return false;
                 }
             }, cancellationToken);
-
-
-
-
         }
-        public async Task PlayRound(Game game, GameRound newGameRound, CancellationToken cancellationToken)
+
+        public async Task PlayRound(Game game, CancellationToken cancellationToken)
         {
             await InTransaction(async () =>
             {
                 try
                 {
-                    await context.Set<GameRound>().AddAsync(newGameRound);
                     await context.SaveChangesAsync(cancellationToken);
-                    game.Rounds = await context.Set<GameRound>().Where(x => x.GameId == game.Id).ToListAsync(cancellationToken);
                     game.UpdateStatus();
                     await context.SaveChangesAsync(cancellationToken);
 

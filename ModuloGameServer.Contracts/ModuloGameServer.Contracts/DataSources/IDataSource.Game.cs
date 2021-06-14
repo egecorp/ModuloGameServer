@@ -11,7 +11,7 @@ namespace ModuloGameServer.Models
         /// <summary>
         /// Ищет игру по Ud
         /// </summary>
-        Task<Game> GetGame(int id, bool withRounds, CancellationToken cancellationToken);
+        Task<Game> GetGame(int id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Добавляет игру в базу
@@ -31,7 +31,7 @@ namespace ModuloGameServer.Models
         /// <summary>
         /// Добавляет сыгранный раунд одного из игроков в базу
         /// </summary>
-        Task PlayRound(Game game, GameRound newGameRound, CancellationToken cancellationToken);
+        Task PlayRound(Game game, CancellationToken cancellationToken);
 
 
     }

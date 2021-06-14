@@ -12,10 +12,11 @@ namespace ModuloGameServer.Controllers
             _logger = logger;
         }
 
-        public IActionResult Endpoint()
+        public string Endpoint()
         {
             _logger.LogInformation("Homecontroller is called");
-            return View();
+            return "OK";
+            
         }
 
 

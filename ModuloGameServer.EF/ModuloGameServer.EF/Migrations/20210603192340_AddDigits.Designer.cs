@@ -109,7 +109,7 @@ namespace ModuloGameServer.EF.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("D1_1_1")
+                    b.Property<int>("MyDigit11")
                         .HasColumnType("int");
 
                     b.Property<int>("D1_1_2")

@@ -5,12 +5,11 @@ using System.Collections.Generic;
 namespace ModuloGameServer.Models
 {
     /// <summary>
-    /// Одна игра
+    /// Одна игра с полной статистикой
     /// </summary>
-    public class AnswerGame
+    public class AnswerUserGame
     {
-
-        #region TotalFields 
+        
 
         /// <summary>
         /// Идентификатор
@@ -28,37 +27,47 @@ namespace ModuloGameServer.Models
         public int? User2Id { set; get; }
 
         /// <summary>
-        /// Имя первого игрока
+        /// Имя игрока
         /// </summary>
-        public string User1Name { set; get; }
+        public string MyUserName { set; get; }
 
         /// <summary>
-        /// Имя второго игрока
+        /// Имя соперника
         /// </summary>
-        public string User2Name { set; get; }
+        public string CompetitorUserName { set; get; }
+
+
 
 
         /// <summary>
-        /// Персонаж первого игрока
+        /// Номер игрока
         /// </summary>
-        public string User1Character { set; get; }
+        public string MyUserNicNumber { set; get; }
+
 
         /// <summary>
-        /// Персонаж второго игрока
+        /// Номер соперника
         /// </summary>
-        public string User2Character { set; get; }
+        public string CompetitorUserNicNumber { set; get; }
+
+
+
+        /// <summary>
+        /// Персонаж игрока
+        /// </summary>
+        public string MyUserCharacter { set; get; }
+
+        /// <summary>
+        /// Персонаж соперника
+        /// </summary>
+        public string CompetitorUserCharacter { set; get; }
 
         /// <summary>
         /// Состояние игры на данный момент
         /// </summary>
         public GAME_STATUS GameStatus { set; get; }
 
-
-        #endregion
-
-
-        #region Extended data
-
+        
         /// <summary>
         /// Игра началась
         /// </summary>
@@ -100,219 +109,226 @@ namespace ModuloGameServer.Models
         public int MinutesPerRound { set; get; }
 
         /// <summary>
-        /// Первый игрок может использовать джокера
+        /// Игрок может использовать джокера
         /// </summary>
-        public bool User1CanUseJoker { set; get; }
+        public bool MyUserCanUseJoker { set; get; }
 
         /// <summary>
-        /// Второй игрок может использовать джокера
+        /// Соперник может использовать джокера
         /// </summary>
-        public bool User2CanUseJoker { set; get; }
+        public bool CompetitorUserCanUseJoker { set; get; }
 
         /// <summary>
-        /// Сколько раундов сыграл первый игрок
+        /// Сколько раундов сыграл игрок
         /// </summary>
-        public int User1MaxRoundNumber { set; get; }
+        public int MyUserMaxRoundNumber { set; get; }
 
         /// <summary>
-        /// Сколько раундов сыграл второй игрок
+        /// Сколько раундов сыграл соперник
         /// </summary>
-        public int User2MaxRoundNumber { set; get; }
-
-
-        /// <summary>
-        /// Счёт первого игрока
-        /// </summary>
-        public int User1Score { set; get; }
-
-        /// <summary>
-        /// Счёт второго игрока
-        /// </summary>
-        public int User2Score { set; get; }
+        public int CompetitorUserMaxRoundNumber { set; get; }
 
 
         /// <summary>
-        /// Список ходов
+        /// Счёт игрока
         /// </summary>
-        public List<GameRound> Rounds { set; get; }
+        public int MyUserScore { set; get; }
 
-        #endregion
-
+        /// <summary>
+        /// Счёт соперника
+        /// </summary>
+        public int CompetitorUserScore { set; get; }
+        
 
         /// <summary>
         /// Текущий раунд
         /// </summary>
-        public  int RoundNumber { set; get; }
+        public int RoundNumber { set; get; }
+
+        /// <summary>
+        /// Игра не завершена
+        /// </summary>
+        public bool IsActive { set; get; }
+
+        /// <summary>
+        /// Игрок сейчас делает ход
+        /// </summary>
+        public bool IsMyUserPlaying { set; get; }
+
+
 
         #region Digits
 
         /// <summary>
         /// Раунд 1 , игрок 1, позиция 1
         /// </summary>
-        public int D1_1_1 { set; get; }
+        public int MyDigit11 { set; get; }
 
         /// <summary>
         /// Раунд 1 , игрок 1, позиция 2
         /// </summary>
-        public int D1_1_2 { set; get; }
+        public int MyDigit12 { set; get; }
 
         /// <summary>
         /// Раунд 1 , игрок 1, позиция 3
         /// </summary>
-        public int D1_1_3 { set; get; }
+        public int MyDigit13 { set; get; }
 
         /// <summary>
         /// Раунд 1 , игрок 2, позиция 1
         /// </summary>
-        public int D1_2_1 { set; get; }
+        public int CompetitorDigit11 { set; get; }
 
         /// <summary>
         /// Раунд 1 , игрок 2, позиция 2
         /// </summary>
-        public int D1_2_2 { set; get; }
+        public int CompetitorDigit12 { set; get; }
 
         /// <summary>
         /// Раунд 1 , игрок 2, позиция 3
         /// </summary>
-        public int D1_2_3 { set; get; }
+        public int CompetitorDigit13 { set; get; }
 
 
 
         /// <summary>
         /// Раунд 2 , игрок 1, позиция 1
         /// </summary>
-        public int D2_1_1 { set; get; }
+        public int MyDigit21 { set; get; }
 
         /// <summary>
         /// Раунд 2 , игрок 1, позиция 2
         /// </summary>
-        public int D2_1_2 { set; get; }
+        public int MyDigit22 { set; get; }
 
         /// <summary>
         /// Раунд 2 , игрок 1, позиция 3
         /// </summary>
-        public int D2_1_3 { set; get; }
+        public int MyDigit23 { set; get; }
 
         /// <summary>
         /// Раунд 2 , игрок 2, позиция 1
         /// </summary>
-        public int D2_2_1 { set; get; }
+        public int CompetitorDigit21 { set; get; }
 
         /// <summary>
         /// Раунд 2 , игрок 2, позиция 2
         /// </summary>
-        public int D2_2_2 { set; get; }
+        public int CompetitorDigit22 { set; get; }
 
         /// <summary>
         /// Раунд 2 , игрок 2, позиция 3
         /// </summary>
-        public int D2_2_3 { set; get; }
+        public int CompetitorDigit23 { set; get; }
 
 
         /// <summary>
         /// Раунд 3 , игрок 1, позиция 1
         /// </summary>
-        public int D3_1_1 { set; get; }
+        public int MyDigit31 { set; get; }
 
         /// <summary>
         /// Раунд 3 , игрок 1, позиция 2
         /// </summary>
-        public int D3_1_2 { set; get; }
+        public int MyDigit32 { set; get; }
 
         /// <summary>
         /// Раунд 3 , игрок 1, позиция 3
         /// </summary>
-        public int D3_1_3 { set; get; }
+        public int MyDigit33 { set; get; }
 
         /// <summary>
         /// Раунд 3 , игрок 2, позиция 1
         /// </summary>
-        public int D3_2_1 { set; get; }
+        public int CompetitorDigit31 { set; get; }
 
         /// <summary>
         /// Раунд 3 , игрок 2, позиция 2
         /// </summary>
-        public int D3_2_2 { set; get; }
+        public int CompetitorDigit32 { set; get; }
 
         /// <summary>
         /// Раунд 3 , игрок 2, позиция 3
         /// </summary>
-        public int D3_2_3 { set; get; }
+        public int CompetitorDigit33 { set; get; }
 
 
 
         /// <summary>
         /// Раунд 4 , игрок 1, позиция 1
         /// </summary>
-        public int D4_1_1 { set; get; }
+        public int MyDigit41 { set; get; }
 
         /// <summary>
         /// Раунд 4 , игрок 1, позиция 2
         /// </summary>
-        public int D4_1_2 { set; get; }
+        public int MyDigit42 { set; get; }
 
         /// <summary>
         /// Раунд 4 , игрок 1, позиция 3
         /// </summary>
-        public int D4_1_3 { set; get; }
+        public int MyDigit43 { set; get; }
 
         /// <summary>
         /// Раунд 4 , игрок 2, позиция 1
         /// </summary>
-        public int D4_2_1 { set; get; }
+        public int CompetitorDigit41 { set; get; }
 
         /// <summary>
         /// Раунд 4 , игрок 2, позиция 2
         /// </summary>
-        public int D4_2_2 { set; get; }
+        public int CompetitorDigit42 { set; get; }
 
         /// <summary>
         /// Раунд 4 , игрок 2, позиция 3
         /// </summary>
-        public int D4_2_3 { set; get; }
+        public int CompetitorDigit43 { set; get; }
 
 
 
         /// <summary>
         /// Раунд 5 , игрок 1, позиция 1
         /// </summary>
-        public int D5_1_1 { set; get; }
+        public int MyDigit51 { set; get; }
 
         /// <summary>
         /// Раунд 5 , игрок 1, позиция 2
         /// </summary>
-        public int D5_1_2 { set; get; }
+        public int MyDigit52 { set; get; }
 
         /// <summary>
         /// Раунд 5 , игрок 1, позиция 3
         /// </summary>
-        public int D5_1_3 { set; get; }
+        public int MyDigit53 { set; get; }
 
         /// <summary>
         /// Раунд 5 , игрок 2, позиция 1
         /// </summary>
-        public int D5_2_1 { set; get; }
+        public int CompetitorDigit51 { set; get; }
 
         /// <summary>
         /// Раунд 5 , игрок 2, позиция 2
         /// </summary>
-        public int D5_2_2 { set; get; }
+        public int CompetitorDigit52 { set; get; }
 
         /// <summary>
         /// Раунд 5 , игрок 2, позиция 3
         /// </summary>
-        public int D5_2_3 { set; get; }
+        public int CompetitorDigit53 { set; get; }
 
 
         #endregion
 
-        public AnswerGame(Game game, int MyUserId)
+
+
+
+
+        public AnswerUserGame(Game game, int myUserId)
         {
             Id = game.Id;
             StartStamp = game.StartStamp;
             MinutesPerRound = game.MinutesPerRound;
-            User1Id = game.User1Id;
-            User2Id = game.User2Id;
+
             IsStart = game.IsStart;
             IsFinish = game.IsFinish;
             IsTimeout = game.IsTimeout;
@@ -320,57 +336,62 @@ namespace ModuloGameServer.Models
             IsGiveUp = game.IsGiveUp;
             IsDeclined = game.IsDeclined;
 
-            User1Name = game.User1?.NicName;
-            User2Name = game.User2?.NicName;
+            IsActive = IsStart && !IsFinish && !IsTimeout && !IsCancel && !IsGiveUp && !IsDeclined;
 
-            User1MaxRoundNumber = game.User1MaxRoundNumber;
-            User2MaxRoundNumber = game.User2MaxRoundNumber;
+            bool firstUserCanUseJoker = game.CanUseJoker(true);
+            bool secondUserCanUseJoker = game.CanUseJoker(false);
 
-            User1Score = game.User1Score;
-            User2Score = game.User2Score;
-
-            //TODO посмотреть, как лучше сделать
-            //RoundNumber = game.RoundNumber;
-
-            switch (game.Status)
+            if (myUserId == game.User2Id)
             {
-                case GAME_STATUS.GAME_ROUND_1_NOUSER:
-                case GAME_STATUS.GAME_ROUND_1_USER1_DONE:
-                case GAME_STATUS.GAME_ROUND_1_USER2_DONE:
-                    RoundNumber = 1;
-                    break;
+                User1Id = game.User2Id;
+                User2Id = game.User1Id;
+                MyUserName = game.User2?.NicName;
+                CompetitorUserName = game.User1?.NicName;
+                MyUserMaxRoundNumber = game.User2MaxRoundNumber;
+                CompetitorUserMaxRoundNumber = game.User1MaxRoundNumber;
+                MyUserScore = game.User2Score;
+                CompetitorUserScore = game.User1Score;
 
-                case GAME_STATUS.GAME_ROUND_2_NOUSER:
-                case GAME_STATUS.GAME_ROUND_2_USER1_DONE:
-                case GAME_STATUS.GAME_ROUND_2_USER2_DONE:
-                    RoundNumber = 2;
-                    break;
+            }
+            else
+            {
+                User1Id = game.User1Id;
+                User2Id = game.User2Id;
+                MyUserName = game.User1?.NicName;
+                CompetitorUserName = game.User2?.NicName;
+                MyUserMaxRoundNumber = game.User1MaxRoundNumber;
+                CompetitorUserMaxRoundNumber = game.User2MaxRoundNumber;
+                MyUserScore = game.User1Score;
+                CompetitorUserScore = game.User2Score;
 
-                case GAME_STATUS.GAME_ROUND_3_NOUSER:
-                case GAME_STATUS.GAME_ROUND_3_USER1_DONE:
-                case GAME_STATUS.GAME_ROUND_3_USER2_DONE:
-                    RoundNumber = 3;
-                    break;
-
-                case GAME_STATUS.GAME_ROUND_4_NOUSER:
-                case GAME_STATUS.GAME_ROUND_4_USER1_DONE:
-                case GAME_STATUS.GAME_ROUND_4_USER2_DONE:
-                    RoundNumber = 4;
-                    break;
-
-                case GAME_STATUS.GAME_ROUND_5_NOUSER:
-                case GAME_STATUS.GAME_ROUND_5_USER1_DONE:
-                case GAME_STATUS.GAME_ROUND_5_USER2_DONE:
-                    RoundNumber = 5;
-                    break;
-                default:
-                    RoundNumber = 0;
-                    break;
             }
 
 
+            if ((MyUserName ?? "").Contains("&!&"))
+            {
+                var nameParts = MyUserName.Split("&!&");
+                if (nameParts.Length > 1)
+                {
+                    MyUserName = nameParts[0];
+                    MyUserNicNumber = nameParts[1] ?? "0";
+                }
+            }
 
-            if (MyUserId == game.User2Id)
+            if ((CompetitorUserName ?? "").Contains("&!&"))
+            {
+                var nameParts = CompetitorUserName.Split("&!&");
+                if (nameParts.Length > 1)
+                {
+                    CompetitorUserName = nameParts[0];
+                    CompetitorUserNicNumber = nameParts[1] ?? "0";
+                }
+            }
+
+            
+            RoundNumber = game.GetCurrentNumber();
+            IsMyUserPlaying = false;
+
+            if (myUserId == game.User2Id)
             {
                 switch (game.Status)
                 {
@@ -465,120 +486,139 @@ namespace ModuloGameServer.Models
                         break;
                 }
 
-                D1_1_1 = game.D1_2_1;
-                D1_1_2 = game.D1_2_2;
-                D1_1_3 = game.D1_2_3;
-                D1_2_1 = game.D1_1_1;
-                D1_2_2 = game.D1_1_2;
-                D1_2_3 = game.D1_1_3;
+                MyDigit11 = game.D1_2_1;
+                MyDigit12 = game.D1_2_2;
+                MyDigit13 = game.D1_2_3;
+                MyDigit21 = game.D2_2_1;
+                MyDigit22 = game.D2_2_2;
+                MyDigit23 = game.D2_2_3;
+                MyDigit31 = game.D3_2_1;
+                MyDigit32 = game.D3_2_2;
+                MyDigit33 = game.D3_2_3;
+                MyDigit41 = game.D4_2_1;
+                MyDigit42 = game.D4_2_2;
+                MyDigit43 = game.D4_2_3;
+                MyDigit51 = game.D5_2_1;
+                MyDigit52 = game.D5_2_2;
+                MyDigit53 = game.D5_2_3;
 
-                D2_1_1 = game.D2_2_1;
-                D2_1_2 = game.D2_2_2;
-                D2_1_3 = game.D2_2_3;
-                D2_2_1 = game.D2_1_1;
-                D2_2_2 = game.D2_1_2;
-                D2_2_3 = game.D2_1_3;
+                CompetitorDigit11 = game.D1_1_1;
+                CompetitorDigit12 = game.D1_1_2;
+                CompetitorDigit13 = game.D1_1_3;
+                CompetitorDigit21 = game.D2_1_1;
+                CompetitorDigit22 = game.D2_1_2;
+                CompetitorDigit23 = game.D2_1_3;
+                CompetitorDigit31 = game.D3_1_1;
+                CompetitorDigit32 = game.D3_1_2;
+                CompetitorDigit33 = game.D3_1_3;
+                CompetitorDigit41 = game.D4_1_1;
+                CompetitorDigit42 = game.D4_1_2;
+                CompetitorDigit43 = game.D4_1_3;
+                CompetitorDigit51 = game.D5_1_1;
+                CompetitorDigit52 = game.D5_1_2;
+                CompetitorDigit53 = game.D5_1_3;
 
-                D3_1_1 = game.D3_2_1;
-                D3_1_2 = game.D3_2_2;
-                D3_1_3 = game.D3_2_3;
-                D3_2_1 = game.D3_1_1;
-                D3_2_2 = game.D3_1_2;
-                D3_2_3 = game.D3_1_3;
+                switch (game.Status)
+                {
+                    case GAME_STATUS.GAME_ROUND_1_NOUSER:
+                    case GAME_STATUS.GAME_ROUND_1_USER1_DONE:
+                    case GAME_STATUS.GAME_ROUND_2_NOUSER:
+                    case GAME_STATUS.GAME_ROUND_2_USER1_DONE:
+                    case GAME_STATUS.GAME_ROUND_3_NOUSER:
+                    case GAME_STATUS.GAME_ROUND_3_USER1_DONE:
+                    case GAME_STATUS.GAME_ROUND_4_NOUSER:
+                    case GAME_STATUS.GAME_ROUND_4_USER1_DONE:
+                    case GAME_STATUS.GAME_ROUND_5_NOUSER:
+                    case GAME_STATUS.GAME_ROUND_5_USER1_DONE:
+                        IsMyUserPlaying = true;
+                        break;
+                }
 
-                D4_1_1 = game.D4_2_1;
-                D4_1_2 = game.D4_2_2;
-                D4_1_3 = game.D4_2_3;
-                D4_2_1 = game.D4_1_1;
-                D4_2_2 = game.D4_1_2;
-                D4_2_3 = game.D4_1_3;
-
-                D5_1_1 = game.D5_2_1;
-                D5_1_2 = game.D5_2_2;
-                D5_1_3 = game.D5_2_3;
-                D5_2_1 = game.D5_1_1;
-                D5_2_2 = game.D5_1_2;
-                D5_2_3 = game.D5_1_3;
+                MyUserCanUseJoker = secondUserCanUseJoker;
+                CompetitorUserCanUseJoker = firstUserCanUseJoker;
             }
             else
             {
                 this.GameStatus = game.Status;
 
 
-                D1_1_1 = game.D1_1_1;
-                D1_1_2 = game.D1_1_2;
-                D1_1_3 = game.D1_1_3;
-                D1_2_1 = game.D1_2_1;
-                D1_2_2 = game.D1_2_2;
-                D1_2_3 = game.D1_2_3;
+                MyDigit11 = game.D1_1_1;
+                MyDigit12 = game.D1_1_2;
+                MyDigit13 = game.D1_1_3;
+                MyDigit21 = game.D2_1_1;
+                MyDigit22 = game.D2_1_2;
+                MyDigit23 = game.D2_1_3;
+                MyDigit31 = game.D3_1_1;
+                MyDigit32 = game.D3_1_2;
+                MyDigit33 = game.D3_1_3;
+                MyDigit41 = game.D4_1_1;
+                MyDigit42 = game.D4_1_2;
+                MyDigit43 = game.D4_1_3;
+                MyDigit51 = game.D5_1_1;
+                MyDigit52 = game.D5_1_2;
+                MyDigit53 = game.D5_1_3;
 
-                D2_1_1 = game.D2_1_1;
-                D2_1_2 = game.D2_1_2;
-                D2_1_3 = game.D2_1_3;
-                D2_2_1 = game.D2_2_1;
-                D2_2_2 = game.D2_2_2;
-                D2_2_3 = game.D2_2_3;
+                CompetitorDigit11 = game.D1_2_1;
+                CompetitorDigit12 = game.D1_2_2;
+                CompetitorDigit13 = game.D1_2_3;
+                CompetitorDigit21 = game.D2_2_1;
+                CompetitorDigit22 = game.D2_2_2;
+                CompetitorDigit23 = game.D2_2_3;
+                CompetitorDigit31 = game.D3_2_1;
+                CompetitorDigit32 = game.D3_2_2;
+                CompetitorDigit33 = game.D3_2_3;
+                CompetitorDigit41 = game.D4_2_1;
+                CompetitorDigit42 = game.D4_2_2;
+                CompetitorDigit43 = game.D4_2_3;
+                CompetitorDigit51 = game.D5_2_1;
+                CompetitorDigit52 = game.D5_2_2;
+                CompetitorDigit53 = game.D5_2_3;
 
-                D3_1_1 = game.D3_1_1;
-                D3_1_2 = game.D3_1_2;
-                D3_1_3 = game.D3_1_3;
-                D3_2_1 = game.D3_2_1;
-                D3_2_2 = game.D3_2_2;
-                D3_2_3 = game.D3_2_3;
+                switch (game.Status)
+                {
+                    case GAME_STATUS.GAME_ROUND_1_NOUSER:
+                    case GAME_STATUS.GAME_ROUND_1_USER2_DONE:
+                    case GAME_STATUS.GAME_ROUND_2_NOUSER:
+                    case GAME_STATUS.GAME_ROUND_2_USER2_DONE:
+                    case GAME_STATUS.GAME_ROUND_3_NOUSER:
+                    case GAME_STATUS.GAME_ROUND_3_USER2_DONE:
+                    case GAME_STATUS.GAME_ROUND_4_NOUSER:
+                    case GAME_STATUS.GAME_ROUND_4_USER2_DONE:
+                    case GAME_STATUS.GAME_ROUND_5_NOUSER:
+                    case GAME_STATUS.GAME_ROUND_5_USER2_DONE:
+                        IsMyUserPlaying = true;
+                        break;
+                }
 
-                D4_1_1 = game.D4_1_1;
-                D4_1_2 = game.D4_1_2;
-                D4_1_3 = game.D4_1_3;
-                D4_2_1 = game.D4_2_1;
-                D4_2_2 = game.D4_2_2;
-                D4_2_3 = game.D4_2_3;
-
-                D5_1_1 = game.D5_1_1;
-                D5_1_2 = game.D5_1_2;
-                D5_1_3 = game.D5_1_3;
-                D5_2_1 = game.D5_2_1;
-                D5_2_2 = game.D5_2_2;
-                D5_2_3 = game.D5_2_3;
+                MyUserCanUseJoker = firstUserCanUseJoker;
+                CompetitorUserCanUseJoker = secondUserCanUseJoker;
             }
 
-            this.Rounds = null;
-            
-        }
-        public AnswerGame(Game game, int MyUserId, bool FullInformation):
-            this(game, MyUserId)
-        {
 
-            if (game.Rounds == null) return;
 
-            if (MyUserId == game.User1Id)
+            if (RoundNumber <= 5)
             {
-                if (this.User1MaxRoundNumber < this.User2MaxRoundNumber)
-                {
-                    this.Rounds = game.Rounds.Where(x => x.RoundNumber <= this.User1MaxRoundNumber).ToList();
-                }
-                else
-                {
-                    this.Rounds = game.Rounds.ToList();
-                }
+                this.CompetitorDigit51 = this.CompetitorDigit52 = this.CompetitorDigit53 = 0;
             }
-            else if (MyUserId == game.User2Id)
+            if (RoundNumber <= 4)
             {
-                if (this.User2MaxRoundNumber < this.User1MaxRoundNumber)
-                {
-                    this.Rounds = game.Rounds.Where(x => x.RoundNumber <= this.User2MaxRoundNumber).ToList();
-                }
-                else
-                {
-                    this.Rounds = game.Rounds.ToList();
-                }
+                this.CompetitorDigit41 = this.CompetitorDigit42 = this.CompetitorDigit43 = 0;
             }
-            else
+            if (RoundNumber <= 3)
             {
-                game.Rounds = game.Rounds.Where(x => (x.RoundNumber <= this.User1MaxRoundNumber) && (x.RoundNumber <= this.User2MaxRoundNumber)).ToList();
+                this.CompetitorDigit31 = this.CompetitorDigit32 = this.CompetitorDigit33 = 0;
             }
+            if (RoundNumber <= 2)
+            {
+                this.CompetitorDigit21 = this.CompetitorDigit22 = this.CompetitorDigit23 = 0;
+            }
+            if (RoundNumber <= 1)
+            {
+                this.CompetitorDigit11 = this.CompetitorDigit12 = this.CompetitorDigit13 = 0;
+            }
+       
 
-            User1CanUseJoker = game.CanUseJoker(true);
-            User2CanUseJoker = game.CanUseJoker(false);
+
         }
     }
 }

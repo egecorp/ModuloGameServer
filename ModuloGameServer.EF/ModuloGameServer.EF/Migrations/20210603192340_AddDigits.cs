@@ -7,7 +7,7 @@ namespace ModuloGameServer.EF.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "D1_1_1",
+                name: "MyDigit11",
                 table: "Games",
                 type: "int",
                 nullable: false,
@@ -220,7 +220,7 @@ namespace ModuloGameServer.EF.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "D1_1_1",
+                name: "MyDigit11",
                 table: "Games");
 
             migrationBuilder.DropColumn(

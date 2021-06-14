@@ -22,13 +22,13 @@ namespace ModuloGameServer.Models
         /// <summary>
         /// Список активный игр пользователя, в том числе ожидающих подтверждения со стороны пользователя или его соперника 
         /// </summary>
-        public List<AnswerGame> ActiveGameList { set; get; }
+        public List<AnswerListGame> ActiveGameList { set; get; }
 
 
         /// <summary>
         /// Список последних сыгранных, прерванных или отменённых игр пользователя
         /// </summary>
-        public List<AnswerGame> RecentGameList { set; get; }
+        public List<AnswerListGame> RecentGameList { set; get; }
 
 
         public AnswerDynamicUserInfo(DynamicUserInfo du)
@@ -37,9 +37,9 @@ namespace ModuloGameServer.Models
 
             CommonRating = du.CommonRating;
 
-            ActiveGameList = du.ActiveGameList?.Select(x => new AnswerGame(x, this.UserId)).ToList();
+            ActiveGameList = du.ActiveGameList?.Select(x => new AnswerListGame(x, UserId)).ToList();
 
-            RecentGameList = du.RecentGameList?.Select(x => new AnswerGame(x, this.UserId)).ToList();
+            RecentGameList = du.RecentGameList?.Select(x => new AnswerListGame(x, UserId)).ToList();
         }
 
 

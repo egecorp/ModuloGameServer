@@ -103,15 +103,6 @@ namespace ModuloGameServer.Models
                                                         .OrderBy(x => x.StartStamp)
                                                         .ToListAsync(cancellationToken);
                 
-                List<int> gameIds = u.DynamicUserInfo.ActiveGameList.Select(x => x.Id).ToList();
-
-                List<GameRound> gameRounds = await context.Set<GameRound>().Where(x => gameIds.Contains((x.GameId)))
-                    .ToListAsync(cancellationToken);
-
-                foreach (Game g in u.DynamicUserInfo.ActiveGameList)
-                {
-                    g.Rounds = gameRounds.Where(x => x.GameId == g.Id).ToList();
-                }
 
             }
 
