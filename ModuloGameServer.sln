@@ -5,11 +5,13 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuloGameServer.WebApp", "ModuloGameServer\ModuloGameServer.WebApp.csproj", "{98708CFE-3B9F-4350-9A13-D1EA036F1F25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuloGameServer.Models", "ModuloGameServer.Models\ModuloGameServer.Models\ModuloGameServer.Models.csproj", "{524AECDF-F040-4B85-BBB2-53FBA13BBF88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuloGameServer.Models", "ModuloGameServer.Models\ModuloGameServer.Models.csproj", "{524AECDF-F040-4B85-BBB2-53FBA13BBF88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuloGameServer.EF", "ModuloGameServer.EF\ModuloGameServer.EF\ModuloGameServer.EF.csproj", "{DA25B47D-757B-41C5-958E-5CD535B16BB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuloGameServer.EF", "ModuloGameServer.EF\ModuloGameServer.EF.csproj", "{DA25B47D-757B-41C5-958E-5CD535B16BB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuloGameServer.Contracts", "ModuloGameServer.Contracts\ModuloGameServer.Contracts\ModuloGameServer.Contracts.csproj", "{6FEDCD07-9A36-428A-9309-6F08910E0903}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuloGameServer.Contracts", "ModuloGameServer.Contracts\ModuloGameServer.Contracts.csproj", "{6FEDCD07-9A36-428A-9309-6F08910E0903}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuloGameServer.BotService", "BotService\ModuloGameServer.BotService.csproj", "{FF149348-9967-4BBB-A170-EEFCC8BB90B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{6FEDCD07-9A36-428A-9309-6F08910E0903}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FEDCD07-9A36-428A-9309-6F08910E0903}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FEDCD07-9A36-428A-9309-6F08910E0903}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF149348-9967-4BBB-A170-EEFCC8BB90B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF149348-9967-4BBB-A170-EEFCC8BB90B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF149348-9967-4BBB-A170-EEFCC8BB90B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF149348-9967-4BBB-A170-EEFCC8BB90B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

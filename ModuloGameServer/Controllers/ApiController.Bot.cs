@@ -61,5 +61,61 @@ namespace ModuloGameServer.Controllers
                 return await JsonErrorAsync("Server Error");
             }
         }
+
+        
+        public async Task<string> CheckBots(CancellationToken cancellationToken)
+        {
+            // TODO вставить авторизацию
+
+            List<Game> activeBotsGames = await DBService.DataSourceGame.GetBotsGames(cancellationToken);
+            //IsUser2Bot
+
+            List<Game> needAcceptGameList =
+                activeBotsGames.Where(x => x.Status == GAME_STATUS.GAME_WAIT_USER2).ToList();
+
+            List<Game> playGameList =
+                activeBotsGames.Where(x => 
+                    (x.Status == GAME_STATUS.GAME_ROUND_1_USER1_DONE) ||
+                    (x.Status == GAME_STATUS.GAME_ROUND_2_USER1_DONE) ||
+                    (x.Status == GAME_STATUS.GAME_ROUND_3_USER1_DONE) ||
+                    (x.Status == GAME_STATUS.GAME_ROUND_4_USER1_DONE) ||
+                    (x.Status == GAME_STATUS.GAME_ROUND_5_USER1_DONE) 
+                ).ToList();
+
+
+
+            foreach (Game game in needAcceptGameList)
+            {
+                Bot bot = await DBService.DataSourceBot.GetBot(game.User2Id.Value, cancellationToken);
+
+                if (await BotService.StartGame(bot, game, cancellationToken))
+                {
+                    Logger.LogInformation($"Start game between bot {bot.BotId} and user {game.User1Id}");
+
+                    game.UpdateStatus();
+
+                    await DBService.DataSourceGame.ChangeGame(game, cancellationToken);
+                }
+            }
+
+
+            foreach (Game game in playGameList)
+            {
+                Bot bot = await DBService.DataSourceBot.GetBot(game.User2Id.Value, cancellationToken);
+
+                if (await BotService.PlayRound(bot, game, cancellationToken))
+                {
+                    Logger.LogInformation($"Play game between bot {bot.BotId} and user {game.User1Id}");
+
+                    game.UpdateStatus();
+
+                    await DBService.DataSourceGame.ChangeGame(game, cancellationToken);
+                }
+            }
+
+
+
+            return await JsonErrorAsync("Not implemented");
+        }
     }
 }

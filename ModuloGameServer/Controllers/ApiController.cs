@@ -15,10 +15,14 @@ namespace ModuloGameServer.Controllers
         private readonly ILogger Logger;
 
         private IModuloGameDBService DBService;
-        public ApiController(IModuloGameDBService _DBService, ILogger<ApiController> logger)
+
+        protected IModuloGameBotService BotService;
+
+        public ApiController(IModuloGameDBService _DBService, ILogger<ApiController> logger, IModuloGameBotService botService)
         {
             DBService = _DBService;
             Logger = logger;
+            BotService = botService;
         }
 
         public string DoIt()

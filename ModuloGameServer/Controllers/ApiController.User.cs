@@ -66,14 +66,42 @@ namespace ModuloGameServer.Controllers
             {
                 if (rd == null) return await JsonErrorAsync("No request");
 
-                Device existDevice = await DBService.DataSourceDevice.GetDevice(rd.DeviceToken, cancellationToken);
+                Device device = await DBService.DataSourceDevice.GetDevice(rd.DeviceToken, cancellationToken);
 
-                if (existDevice == null) return await JsonErrorAsync("Access denied");
+                if (device == null) return await JsonErrorAsync("Access denied");
 
-                if (existDevice.IsDisabled == true) return await JsonErrorAsync("Device is disabled");
+                if (device.IsDisabled == true) return await JsonErrorAsync("Device is disabled");
 
-                AnswerDevice ad = new AnswerDevice(existDevice);
+                AnswerDevice ad = new AnswerDevice(device);
 
+                if (device.CurrentConfirmationId.HasValue)
+                {
+
+                    UserConfirmation userConfirmation =
+                        await DBService.DataSourceUserConfirmation.GetUserConfirmation(
+                            device.CurrentConfirmationId.Value, cancellationToken);
+
+                    if ((userConfirmation != null) && !userConfirmation.IsCancel &&
+                        ((userConfirmation.ExpiredTime ?? DateTime.MinValue) >= DateTime.Now))
+                    {
+                        User user = await DBService.DataSourceUser.GetUser(userConfirmation.UserId, cancellationToken);
+                        ad.WaitConfirmation = true;
+                        ad.UserMail = user.EMail;
+                    }
+                    else
+                    {
+                        if (userConfirmation != null)
+                        {
+                            userConfirmation.IsCancel = true;
+                            await DBService.DataSourceUserConfirmation.ChangeUserConfirmation(userConfirmation, cancellationToken);
+                        }
+
+                        device.CurrentConfirmationId = null;
+                        await DBService.DataSourceDevice.ChangeDevice(device, cancellationToken);
+                    }
+                    
+                }
+                
                 string workToken = Tokens.AddDevice(ad);
 
                 Thread.Sleep(2000);
@@ -219,6 +247,7 @@ namespace ModuloGameServer.Controllers
                     TNumber = ru.TNumber,
                     NicName = ru.NicName,
                     Birthday = ru.Birthday,
+                    IsVerified = false
                 };
 
                 if (!CheckEmail(u.EMail)) return await JsonErrorAsync(SERVER_ERROR.SIGNUP_BAD_EMAIL, true);
@@ -236,10 +265,8 @@ namespace ModuloGameServer.Controllers
 
                 await DBService.DataSourceUser.AddUser(u, cancellationToken);
 
-
-
                 if (u.Id <= 0) return await JsonErrorAsync(SERVER_ERROR.SERVER_ERROR);
-
+                
                 u.NicName = u.NicName + Models.User.NICNAME_ID_DELIMITER + u.Id.ToString("000000");
 
                 await DBService.DataSourceUser.ChangeUser(u, cancellationToken);
@@ -247,6 +274,10 @@ namespace ModuloGameServer.Controllers
                 existDevice.UserId = u.Id;
 
                 await DBService.DataSourceDevice.ChangeDevice(existDevice, cancellationToken);
+
+                UserConfirmation userConfirmation = CreateConfirmation(existDevice, u, ConfirmationType.Registration);
+
+                await DBService.DataSourceUserConfirmation.AddUserConfirmation(userConfirmation, cancellationToken);
 
                 AnswerUser au = new AnswerUser(u);
 
@@ -270,9 +301,63 @@ namespace ModuloGameServer.Controllers
         /// и отправить код авторизации
         /// Возвращается постоянный токен устройства
         /// </summary>
-        public string SignInExistUser([FromBody] RequestUser ru, CancellationToken cancellationToken)
+        public async Task<string> SignInExistUser([FromBody] RequestUser ru, CancellationToken cancellationToken)
         {
-            return "Error";
+            await this.DBService.BeginTransaction(cancellationToken);
+
+            try
+            {
+                if (ru == null) return await JsonErrorAsync(SERVER_ERROR.BAD_DATA);
+
+                int? deviceId = Tokens.GetDeviceId(ru.DeviceWorkToken);
+
+                if (!deviceId.HasValue) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                Device device = await DBService.DataSourceDevice.GetDevice(deviceId.Value, cancellationToken);
+
+                if (device == null) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                if (device.IsDisabled == true) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                if (device.UserId.HasValue) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_ALREADY_BOUND, true);
+
+                if (string.IsNullOrWhiteSpace(ru.EMail)) return await JsonErrorAsync(SERVER_ERROR.SIGNUP_BAD_EMAIL, true);
+
+                User u = await DBService.DataSourceUser.GetUserByEmail(ru.EMail, cancellationToken);
+                    
+                if (u == null) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_USER_NOT_FOUND, true);
+                if (u.IsBlocked) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_USER_BLOCKED, true);
+                if (u.IsBot) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADUSER, true);
+                if (u.IsAnonim) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADUSER, true);
+                //if (!u.IsVerified) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADUSER, true);
+
+
+                UserConfirmation userConfirmation = CreateConfirmation(device, u, ConfirmationType.NewDevice);
+
+                await DBService.DataSourceUserConfirmation.AddUserConfirmation(userConfirmation, cancellationToken);
+
+                device.CurrentConfirmationId = userConfirmation.Id;
+                await DBService.DataSourceDevice.ChangeDevice(device, cancellationToken);
+
+                AnswerDevice ad = new AnswerDevice(device);
+
+
+                ad.WaitConfirmation = true;
+                ad.UserMail = u.EMail;
+
+
+                await this.DBService.CoommitTransaction(cancellationToken);
+
+                return JsonConvert.SerializeObject(ad);
+                
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                await this.DBService.RollbackTransaction(cancellationToken);
+                return await JsonErrorAsync(SERVER_ERROR.SERVER_ERROR);
+            }
+
         }
 
         /// <summary>
@@ -287,17 +372,210 @@ namespace ModuloGameServer.Controllers
         /// <summary>
         /// Повторить отправку кода авторизации
         /// </summary>
-        public string RepeateVerifyingMail([FromBody] RequestUser ru, CancellationToken cancellationToken)
+        public async Task <string> RepeateVerifyingMail([FromBody] RequestUser ru, CancellationToken cancellationToken)
         {
-            return "Error";
+            await this.DBService.BeginTransaction(cancellationToken);
+
+            try
+            {
+                if (ru == null) return await JsonErrorAsync(SERVER_ERROR.BAD_DATA);
+
+                int? deviceId = Tokens.GetDeviceId(ru.DeviceWorkToken);
+
+                if (!deviceId.HasValue) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                Device device = await DBService.DataSourceDevice.GetDevice(deviceId.Value, cancellationToken);
+
+                if (device == null) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                if (device.IsDisabled == true) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                if (device.UserId.HasValue) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_ALREADY_BOUND, true);
+
+                if (string.IsNullOrWhiteSpace(ru.EMail)) return await JsonErrorAsync(SERVER_ERROR.SIGNUP_BAD_EMAIL, true);
+
+                User u = await DBService.DataSourceUser.GetUserByEmail(ru.EMail, cancellationToken);
+
+                if (u == null) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_USER_NOT_FOUND, true);
+                if (u.IsBlocked) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_USER_BLOCKED, true);
+                if (u.IsBot) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADUSER, true);
+                if (u.IsAnonim) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADUSER, true);
+                //if (!u.IsVerified) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADUSER, true);
+
+                if (device.CurrentConfirmationId.HasValue)
+                {
+                    UserConfirmation oldUserConfirmation =
+                        await DBService.DataSourceUserConfirmation.GetUserConfirmation(device.CurrentConfirmationId.Value,
+                            cancellationToken);
+
+                    if ((DateTime.Now - oldUserConfirmation.SendStamp.Value).TotalMinutes <
+                        UserConfirmation.MIN_REQUEST_PERIOD_MINUTES)
+                        return await JsonErrorAsync(SERVER_ERROR.SIGNIN_TOO_QUICK, true);
+                    
+
+
+                    oldUserConfirmation.IsCancel = true;
+                    
+                    await DBService.DataSourceUserConfirmation.ChangeUserConfirmation(oldUserConfirmation,
+                        cancellationToken);
+                }
+
+                UserConfirmation userConfirmation = CreateConfirmation(device, u, ConfirmationType.NewDevice);
+
+                await DBService.DataSourceUserConfirmation.AddUserConfirmation(userConfirmation, cancellationToken);
+
+                device.CurrentConfirmationId = userConfirmation.Id;
+                await DBService.DataSourceDevice.ChangeDevice(device, cancellationToken);
+
+                AnswerDevice ad = new AnswerDevice(device);
+
+                ad.WaitConfirmation = true;
+                ad.UserMail = u.EMail;
+
+                await this.DBService.CoommitTransaction(cancellationToken);
+
+                return JsonConvert.SerializeObject(ad);
+
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                await this.DBService.RollbackTransaction(cancellationToken);
+                return await JsonErrorAsync(SERVER_ERROR.SERVER_ERROR);
+            }
+
+        }
+
+        /// <summary>
+        /// Отменить авторизацию и отвязать от устройства
+        /// </summary>
+        public async Task<string> CancelVerifying([FromBody] RequestUser ru, CancellationToken cancellationToken)
+        {
+            await this.DBService.BeginTransaction(cancellationToken);
+
+            try
+            {
+                if (ru == null) return await JsonErrorAsync(SERVER_ERROR.BAD_DATA);
+
+                int? deviceId = Tokens.GetDeviceId(ru.DeviceWorkToken);
+
+                if (!deviceId.HasValue) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                Device device = await DBService.DataSourceDevice.GetDevice(deviceId.Value, cancellationToken);
+
+                if (device == null) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                if (device.IsDisabled == true) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                if (device.UserId.HasValue) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_ALREADY_BOUND, true);
+
+                if (device.CurrentConfirmationId.HasValue)
+                {
+                    UserConfirmation oldUserConfirmation =
+                        await DBService.DataSourceUserConfirmation.GetUserConfirmation(device.CurrentConfirmationId.Value,
+                            cancellationToken);
+
+                    oldUserConfirmation.IsCancel = true;
+
+                    await DBService.DataSourceUserConfirmation.ChangeUserConfirmation(oldUserConfirmation,
+                        cancellationToken);
+                }
+
+                device.CurrentConfirmationId = null;
+                await DBService.DataSourceDevice.ChangeDevice(device, cancellationToken);
+
+                AnswerDevice ad = new AnswerDevice(device);
+
+                ad.WaitConfirmation = false;
+                ad.UserMail = null;
+
+                await this.DBService.CoommitTransaction(cancellationToken);
+
+                return JsonConvert.SerializeObject(ad);
+
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                await this.DBService.RollbackTransaction(cancellationToken);
+                return await JsonErrorAsync(SERVER_ERROR.SERVER_ERROR);
+            }
+
         }
 
         /// <summary>
         /// Ввести код авторизации
         /// </summary>
-        public string EnterVerifyingCode([FromBody] RequestUser ru, CancellationToken cancellationToken)
+        public async Task<string> EnterVerifyingCode([FromBody] RequestUser ru, CancellationToken cancellationToken)
         {
-            return "Error";
+            await this.DBService.BeginTransaction(cancellationToken);
+
+            try
+            {
+                if (ru == null) return await JsonErrorAsync(SERVER_ERROR.BAD_DATA);
+
+                int? deviceId = Tokens.GetDeviceId(ru.DeviceWorkToken);
+
+                if (!deviceId.HasValue) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                Device device = await DBService.DataSourceDevice.GetDevice(deviceId.Value, cancellationToken);
+
+                if (device == null) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                if (device.IsDisabled == true) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                // TODO добавить случай ввода кода для первого устройства
+                if (device.UserId.HasValue) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_ALREADY_BOUND, true);
+
+                if (string.IsNullOrWhiteSpace(ru.ConfirmationCode)) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADCODE, true);
+
+                if (!device.CurrentConfirmationId.HasValue) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADUSER, true);
+                
+                UserConfirmation userConfirmation =
+                    await DBService.DataSourceUserConfirmation.GetUserConfirmation(device.CurrentConfirmationId.Value,
+                        cancellationToken);
+
+                if ((userConfirmation == null) || userConfirmation.IsCancel) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADUSER, true);
+
+                if (userConfirmation.IsConfirm) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_ALREADY_BOUND, true);
+                
+                if ((userConfirmation.ExpiredTime ?? DateTime.MinValue) < DateTime.Now) return await JsonErrorAsync(
+                    SERVER_ERROR.SIGNIN_EXPIRED, true);
+
+
+                User u = await DBService.DataSourceUser.GetUser(userConfirmation.UserId, cancellationToken);
+
+                if (u == null) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_USER_NOT_FOUND, true);
+                if (u.IsBlocked) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_USER_BLOCKED, true);
+                if (u.IsBot) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADUSER, true);
+                if (u.IsAnonim) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADUSER, true);
+
+                if (userConfirmation.Code != ru.ConfirmationCode) return await JsonErrorAsync(SERVER_ERROR.SIGNIN_BADCODE, true);
+
+                userConfirmation.IsConfirm = true;
+                await DBService.DataSourceUserConfirmation.ChangeUserConfirmation(userConfirmation,
+                    cancellationToken);
+            
+                device.CurrentConfirmationId = null;
+                device.UserId = u.Id;
+                await DBService.DataSourceDevice.ChangeDevice(device, cancellationToken);
+
+                AnswerDevice ad = new AnswerDevice(device);
+
+                ad.WaitConfirmation = false;
+                ad.UserMail = null;
+
+                await this.DBService.CoommitTransaction(cancellationToken);
+
+                return JsonConvert.SerializeObject(ad);
+
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                await this.DBService.RollbackTransaction(cancellationToken);
+                return await JsonErrorAsync(SERVER_ERROR.SERVER_ERROR);
+            }
         }
 
         /// <summary>
@@ -437,6 +715,21 @@ namespace ModuloGameServer.Controllers
 
         }
 
+
+        private UserConfirmation CreateConfirmation(Device device, User u, ConfirmationType confirmationType)
+        {
+            return new UserConfirmation()
+            {
+                Code = "1111",
+                LinkCode = (new Guid()).ToString(),
+                ConfirmationMethod = ConfirmationMethod.Mail,
+                ConfirmationType = confirmationType,
+                DeviceId = device.Id,
+                ExpiredTime = DateTime.Now.AddDays(1),
+                SendStamp = DateTime.Now,
+                UserId = u.Id
+            };
+        }
 
     }
 }

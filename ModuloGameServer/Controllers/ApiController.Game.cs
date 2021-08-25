@@ -107,8 +107,11 @@ namespace ModuloGameServer.Controllers
                     StartStamp = DateTime.Now,
                     User1Id = cu.User.Id,
                     User1MaxRoundNumber = 0,
-                    User2MaxRoundNumber = 0
+                    User2MaxRoundNumber = 0,
+                    IsUser2Bot = competitor?.IsBot ?? false
                 };
+
+                
 
                 if (competitor != null) newGame.User2Id = competitor.Id;
 
@@ -117,6 +120,32 @@ namespace ModuloGameServer.Controllers
                 {
                     return await JsonErrorAsync("Game didn't be created");
                 }
+
+
+
+                Game game = await DBService.DataSourceGame.GetGame(newGame.Id, cancellationToken);
+                if (game == null) return await JsonErrorAsync("Game not found");
+ 
+                if (game.User2?.IsBot == true)
+                {
+
+                    //Task botPlaying = new Task(delegate()
+                    //{
+                    //    Thread.Sleep(1000);
+                    Bot bot = await DBService.DataSourceBot.GetBot(game.User2Id.Value, cancellationToken);
+
+                    if (await BotService.StartGame(bot, game, cancellationToken))
+                    {
+                        Logger.LogInformation($"Start game between bot {bot.BotId} and user {game.User1Id}");
+
+                        game.UpdateStatus();
+
+                        await DBService.DataSourceGame.ChangeGame(game, cancellationToken);
+                    }
+                    //});
+                }
+
+
 
                 AnswerUserGame ag = new AnswerUserGame(newGame, cu.User.Id);
                 return JsonConvert.SerializeObject(ag);
@@ -292,6 +321,27 @@ namespace ModuloGameServer.Controllers
                 await DBService.DataSourceGame.PlayRound(game, cancellationToken);
                 
                 game = await DBService.DataSourceGame.GetGame(rg.Id.Value, cancellationToken);
+
+                if (game.User2?.IsBot == true)
+                {
+
+                    //Task botPlaying = new Task(delegate()
+                    //{
+                    //    Thread.Sleep(1000);
+                        Bot bot = await DBService.DataSourceBot.GetBot(game.User2Id.Value, cancellationToken);
+
+                        if (await BotService.PlayRound(bot, game, cancellationToken))
+                        {
+                            Logger.LogInformation($"Start game between bot {bot.BotId} and user {game.User1Id}");
+
+                            game.UpdateStatus();
+
+                            await DBService.DataSourceGame.ChangeGame(game, cancellationToken);
+                        }
+                    //});
+                }
+
+
                 AnswerUserGame ag = new AnswerUserGame(game, cu.User.Id);
                 return JsonConvert.SerializeObject(ag);
             }

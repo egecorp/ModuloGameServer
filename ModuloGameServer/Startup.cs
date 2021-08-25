@@ -28,8 +28,8 @@ namespace ModuloGameServer
 
             services.AddSqlServer(ConnectionString);
             services.AddScoped<IModuloGameDBSetupService, ModuloGameDBSetupService>();
-
-
+            services.AddScoped<IModuloGameBotService, BotService.BotService>();
+            
             services.AddControllersWithViews();
 
             services.AddCors(o => o.AddPolicy("ApiPolicy", builder =>
