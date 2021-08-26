@@ -43,7 +43,7 @@ namespace ModuloGameServer.Models
             User2Score = game.User2Score;
 
             GameStamp = game.StartStamp;
-
+            
             if (myUserId == game.User2Id)
             {
                 switch (game.Status)

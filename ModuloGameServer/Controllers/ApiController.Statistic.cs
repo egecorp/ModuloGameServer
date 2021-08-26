@@ -59,8 +59,16 @@ namespace ModuloGameServer.Controllers
                 GamesAggregates resultGamesAggregates =
                     await DBService.DataSourceGame.GetGamesAggregates(cu.User.Id, competitorUser.Id, cancellationToken);
 
+
+                (List<Game> gamesList, int gamesCount) =
+                    await DBService.DataSourceGame.GetGamesList(cu.User.Id, competitorUser.Id, 0, cancellationToken);
+
+                IEnumerable<AnswerStatisticGame> answerGamesList =
+                    gamesList.Select(x => new AnswerStatisticGame(x, cu.User.Id));
+
                 cu.User.DynamicUserInfo = cu.DynamicUserInfo;
-                AnswerStatisticCompetitor asc = new AnswerStatisticCompetitor(cu.User, competitorUser, resultGamesAggregates, null);
+                AnswerStatisticCompetitor asc = new AnswerStatisticCompetitor(cu.User, competitorUser,
+                    resultGamesAggregates, answerGamesList, gamesCount);
                 return JsonConvert.SerializeObject(asc);
             }
             catch (Exception e)

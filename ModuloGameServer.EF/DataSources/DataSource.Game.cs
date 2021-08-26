@@ -14,7 +14,7 @@ namespace ModuloGameServer.Models
         public DataSourceGame(ModuloGameDBContext context)
             : base(context)
         {
-            
+
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace ModuloGameServer.Models
         /// <param name="Id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Game> GetGame(int Id,  CancellationToken cancellationToken)
+        public async Task<Game> GetGame(int Id, CancellationToken cancellationToken)
         {
             Game game = await context.Set<Game>().FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
             return game;
@@ -59,7 +59,7 @@ namespace ModuloGameServer.Models
                         await context.SaveChangesAsync(cancellationToken);
                         return true;
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Console.WriteLine(e.Message);
                         return false;
@@ -77,7 +77,7 @@ namespace ModuloGameServer.Models
             await context.SaveChangesAsync(cancellationToken);
         }
 
-        
+
         public async Task UpdateGameStatus(Game game, CancellationToken cancellationToken)
         {
             await InTransaction(async () =>
@@ -130,9 +130,9 @@ namespace ModuloGameServer.Models
         public async Task<GamesAggregates> GetGamesAggregates(int mainUserId, int? competitorUserId,
             CancellationToken cancellationToken)
         {
-            var  gamesAsUser1 = context.Set<Game>()
+            var gamesAsUser1 = context.Set<Game>()
                 .Where(x => (x.User1Id == mainUserId)
-                            && ( !competitorUserId.HasValue || (competitorUserId == x.User2Id)));
+                            && (!competitorUserId.HasValue || (competitorUserId == x.User2Id)));
 
             var gamesAsUser2 = context.Set<Game>()
                 .Where(x => (x.User2Id == mainUserId)
@@ -140,12 +140,12 @@ namespace ModuloGameServer.Models
 
             // TODO подумать, включать ли сюда недоигранные прерванные игры
             int winCount = await gamesAsUser1.Where(x => x.Status == GAME_STATUS.GAME_FINISH_USER1_WIN)
-                               .CountAsync(cancellationToken) + 
+                               .CountAsync(cancellationToken) +
                            await gamesAsUser2.Where(x => x.Status == GAME_STATUS.GAME_FINISH_USER2_WIN)
                                 .CountAsync(cancellationToken);
 
             int loseCount = await gamesAsUser1.Where(x => x.Status == GAME_STATUS.GAME_FINISH_USER2_WIN)
-                                .CountAsync(cancellationToken) + 
+                                .CountAsync(cancellationToken) +
                             await gamesAsUser2.Where(x => x.Status == GAME_STATUS.GAME_FINISH_USER1_WIN)
                                 .CountAsync(cancellationToken);
 
@@ -154,8 +154,38 @@ namespace ModuloGameServer.Models
                             await gamesAsUser2.Where(x => x.Status == GAME_STATUS.GAME_FINISH_USER2_DRAW)
                                 .CountAsync(cancellationToken);
 
-            return new GamesAggregates{ WinCount = winCount, LoseCount = loseCount, DrawCount = drawCount};
+            return new GamesAggregates { WinCount = winCount, LoseCount = loseCount, DrawCount = drawCount };
         }
+
+        // TODO перенести в нужное место
+        public const int MAX_GAMES_PER_REQUEST = 10;
+
+        public async Task<(List<Game>, int)> GetGamesList(int mainUserId, int competitorUserId, int page,
+            CancellationToken cancellationToken)
+        {
+            var gamesAsUser1 = context.Set<Game>()
+                .Where(x => (x.User1Id == mainUserId) && (competitorUserId == x.User2Id));
+
+            var gamesAsUser2 = context.Set<Game>()
+                .Where(x => (x.User2Id == mainUserId) && (competitorUserId == x.User1Id));
+
+            int globalCount = await gamesAsUser1.CountAsync(cancellationToken) + await gamesAsUser2.CountAsync(cancellationToken);
+
+            List<Game> result;
+            if (page * MAX_GAMES_PER_REQUEST > globalCount)
+            {
+                result = new List<Game>();
+            }
+            else
+            {
+                result = await gamesAsUser1.Union(gamesAsUser2)
+                    .OrderBy(x => x.StartStamp).Skip(page * MAX_GAMES_PER_REQUEST).Take(MAX_GAMES_PER_REQUEST)
+                    .ToListAsync(cancellationToken);
+
+            }
+
+            return (result, globalCount);
+        }            
 
     }
 }

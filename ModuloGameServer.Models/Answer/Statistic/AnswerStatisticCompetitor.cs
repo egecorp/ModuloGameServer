@@ -90,7 +90,7 @@ namespace ModuloGameServer.Models
         public int GamesCount { set; get; }
 
 
-        public AnswerStatisticCompetitor(User user, User competitor, GamesAggregates gamesAggregates, IEnumerable<AnswerStatisticGame> games)
+        public AnswerStatisticCompetitor(User user, User competitor, GamesAggregates gamesAggregates, IEnumerable<AnswerStatisticGame> games, int gamesCount)
         {
             MyId = user.Id;
             MyNicName = user.NicName;
@@ -118,7 +118,7 @@ namespace ModuloGameServer.Models
             DrawCount = gamesAggregates.DrawCount;
 
             Games = games?.Take(GAMES_ON_A_REQUEST).ToList();
-            GamesCount = games?.Count() ?? 0;
+            GamesCount = gamesCount;
         }
     }
 }

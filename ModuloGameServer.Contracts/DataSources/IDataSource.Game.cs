@@ -45,5 +45,10 @@ namespace ModuloGameServer.Models
         /// <param name="competitorUserId">Соперник, null если нужен результат по всем играм</param>
         Task<GamesAggregates> GetGamesAggregates(int mainUserId, int? competitorUserId,
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Выдаёт список игр между двумя пользователям с пагинацией и общее количество игр
+        /// </summary>
+        Task<(List<Game>, int)> GetGamesList(int mainUserId, int competitorUserId, int page, CancellationToken cancellationToken);
     }
 }
