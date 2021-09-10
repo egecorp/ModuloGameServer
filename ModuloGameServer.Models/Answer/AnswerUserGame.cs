@@ -53,14 +53,18 @@ namespace ModuloGameServer.Models
 
 
         /// <summary>
-        /// Персонаж игрока
+        /// Персонаж игрока с эмоцией
         /// </summary>
         public string MyUserCharacter { set; get; }
 
+
+
         /// <summary>
-        /// Персонаж соперника
+        /// Персонаж соперника с эмоцией
         /// </summary>
         public string CompetitorUserCharacter { set; get; }
+
+
 
         /// <summary>
         /// Состояние игры на данный момент
@@ -346,10 +350,17 @@ namespace ModuloGameServer.Models
                 User1Id = game.User2Id;
                 User2Id = game.User1Id;
                 MyUserName = game.User2?.NicName;
-                CompetitorUserName = game.User1?.NicName;
+                MyUserCharacter = game.User2.DynamicUserInfo.Character + (string.IsNullOrWhiteSpace(game.User2.DynamicUserInfo.Emotion)
+                    ? ""
+                    : (":" + game.User2.DynamicUserInfo.Emotion));
                 MyUserMaxRoundNumber = game.User2MaxRoundNumber;
-                CompetitorUserMaxRoundNumber = game.User1MaxRoundNumber;
                 MyUserScore = game.User2Score;
+
+                CompetitorUserName = game.User1?.NicName;
+                CompetitorUserMaxRoundNumber = game.User1MaxRoundNumber;
+                CompetitorUserCharacter = game.User1.DynamicUserInfo.Character + (string.IsNullOrWhiteSpace(game.User1.DynamicUserInfo.Emotion)
+                    ? ""
+                    : (":" + game.User1.DynamicUserInfo.Emotion));
                 CompetitorUserScore = game.User1Score;
 
             }
@@ -358,10 +369,22 @@ namespace ModuloGameServer.Models
                 User1Id = game.User1Id;
                 User2Id = game.User2Id;
                 MyUserName = game.User1?.NicName;
-                CompetitorUserName = game.User2?.NicName;
                 MyUserMaxRoundNumber = game.User1MaxRoundNumber;
-                CompetitorUserMaxRoundNumber = game.User2MaxRoundNumber;
+                MyUserCharacter = game.User1.DynamicUserInfo.Character + (string.IsNullOrWhiteSpace(game.User1.DynamicUserInfo.Emotion)
+                    ? ""
+                    : (":" + game.User1.DynamicUserInfo.Emotion));
+
                 MyUserScore = game.User1Score;
+
+                CompetitorUserName = game.User2?.NicName;
+                CompetitorUserMaxRoundNumber = game.User2MaxRoundNumber;
+                if (game.User2 != null)
+                {
+                    CompetitorUserCharacter = game.User2.DynamicUserInfo.Character + (string.IsNullOrWhiteSpace(game.User2.DynamicUserInfo.Emotion)
+                        ? ""
+                        : (":" + game.User2.DynamicUserInfo.Emotion));
+                }
+
                 CompetitorUserScore = game.User2Score;
 
             }

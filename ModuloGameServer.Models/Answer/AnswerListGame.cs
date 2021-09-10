@@ -81,6 +81,15 @@ namespace ModuloGameServer.Models
             User1Name = game.User1?.NicName;
             User2Name = game.User2?.NicName;
 
+            User1Character = game.User1?.DynamicUserInfo.Character +
+                             (string.IsNullOrWhiteSpace(game.User1?.DynamicUserInfo.Emotion)
+                                 ? ""
+                                 : (":" + game.User1?.DynamicUserInfo.Emotion));
+            User2Character = game.User2?.DynamicUserInfo.Character +
+                             (string.IsNullOrWhiteSpace(game.User2?.DynamicUserInfo.Emotion)
+                                 ? ""
+                                 : (":" + game.User2?.DynamicUserInfo.Emotion));
+
             if ((User1Name ?? "").Contains("&!&"))
             {
                 var nameParts = User1Name.Split("&!&");

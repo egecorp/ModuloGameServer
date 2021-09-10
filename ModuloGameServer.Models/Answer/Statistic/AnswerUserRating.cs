@@ -6,9 +6,9 @@ using System.Linq;
 namespace ModuloGameServer.Models
 {
     /// <summary>
-    /// Статистика текущего пользователя
+    /// Пользователь в рейтинге
     /// </summary>
-    public class AnswerStatisticUser
+    public class AnswerUserRating
     {
         /// <summary>
         /// Идентификатор пользователя
@@ -36,27 +36,7 @@ namespace ModuloGameServer.Models
         public string Character { set; get; }
 
 
-        /// <summary>
-        /// Количество побед
-        /// </summary>
-        public int WinCount { set; get; }
-
-        /// <summary>
-        /// Количество поражений
-        /// </summary>
-        public int LoseCount { set; get; }
-
-        /// <summary>
-        /// Количество ничей
-        /// </summary>
-        public int DrawCount { set; get; }
-
-        /// <summary>
-        /// Достижения пользователя
-        /// </summary>
-        public List<AnswerUserAchievement> Achievements { set; get; }
-
-        public AnswerStatisticUser(User user, GamesAggregates gamesAggregates, int worldIndex, IEnumerable<AnswerUserAchievement> userAchievements)
+        public AnswerUserRating(User user, int worldIndex)
         {
             Id = user.Id;
             NicName = user.NicName;
@@ -65,10 +45,6 @@ namespace ModuloGameServer.Models
             Character = user.DynamicUserInfo.Character + (string.IsNullOrWhiteSpace(user.DynamicUserInfo.Emotion)
                 ? ""
                 : (":" + user.DynamicUserInfo.Emotion));
-            WinCount = gamesAggregates.WinCount;
-            LoseCount = gamesAggregates.LoseCount;
-            DrawCount = gamesAggregates.DrawCount;
-            Achievements = userAchievements?.ToList();
         }
     }
 }

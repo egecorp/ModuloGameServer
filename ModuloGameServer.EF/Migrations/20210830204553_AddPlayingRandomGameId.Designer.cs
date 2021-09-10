@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ModuloGameServer.Models;
 
 namespace ModuloGameServer.EF.Migrations
 {
     [DbContext(typeof(ModuloGameDBContext))]
-    partial class ModuloGameDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210830204553_AddPlayingRandomGameId")]
+    partial class AddPlayingRandomGameId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,14 +95,8 @@ namespace ModuloGameServer.EF.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Character")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("CommonRating")
                         .HasColumnType("int");
-
-                    b.Property<string>("Emotion")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
 

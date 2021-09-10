@@ -32,11 +32,9 @@ namespace ModuloGameServer.Models
         public int MyWorldRating { set; get; }
 
         /// <summary>
-        /// Персонаж пользователя
+        /// Персонаж пользователя с эмоцией
         /// </summary>
         public string MyCharacter { set; get; }
-
-
 
 
         /// <summary>
@@ -60,9 +58,10 @@ namespace ModuloGameServer.Models
         public int CompetitorWorldRating { set; get; }
 
         /// <summary>
-        /// Персонаж соперника
+        /// Персонаж соперника  с эмоцией
         /// </summary>
         public string CompetitorCharacter { set; get; }
+
 
         /// <summary>
         /// Количество побед над сопериком
@@ -90,28 +89,27 @@ namespace ModuloGameServer.Models
         public int GamesCount { set; get; }
 
 
-        public AnswerStatisticCompetitor(User user, User competitor, GamesAggregates gamesAggregates, IEnumerable<AnswerStatisticGame> games, int gamesCount)
+        public AnswerStatisticCompetitor(User user, User competitor, GamesAggregates gamesAggregates, int myWorldRating,
+            int competitorWorldRating, IEnumerable<AnswerStatisticGame> games, int gamesCount)
         {
             MyId = user.Id;
             MyNicName = user.NicName;
-
-            // TODO доделать
-            MyWorldRating = 15;
-            // TODO падать, если null
-            MyRating = user.DynamicUserInfo?.CommonRating ?? 0;
-            // TODO доделать
-            MyCharacter = null;
+            MyWorldRating = myWorldRating;
+            MyRating = user.DynamicUserInfo.CommonRating;
+            MyCharacter = user.DynamicUserInfo.Character + (string.IsNullOrWhiteSpace(user.DynamicUserInfo.Emotion)
+                ? ""
+                : (":" + user.DynamicUserInfo.Emotion));
 
 
             CompetitorId = competitor.Id;
             CompetitorName = competitor.NicName;
-            
-            // TODO доделать
-            CompetitorWorldRating = 24;
-            // TODO падать, если null
-            CompetitorRating = competitor.DynamicUserInfo?.CommonRating ?? 0;
-            // TODO доделать
-            CompetitorCharacter = null;
+            CompetitorWorldRating = competitorWorldRating;
+
+            CompetitorRating = competitor.DynamicUserInfo.CommonRating;
+            CompetitorCharacter = competitor.DynamicUserInfo.Character + (string.IsNullOrWhiteSpace(competitor.DynamicUserInfo.Emotion)
+                ? ""
+                : (":" + competitor.DynamicUserInfo.Emotion));
+
 
             WinCount = gamesAggregates.WinCount;
             LoseCount = gamesAggregates.LoseCount;

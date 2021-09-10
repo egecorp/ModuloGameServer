@@ -33,13 +33,26 @@ namespace ModuloGameServer.Models
         /// </summary>
         public bool IsBot { set; get; }
 
+
+        /// <summary>
+        /// Персонаж пользователя c эмоцией
+        /// </summary>
+        public string Character { set; get; }
+
+        
+
         public AnswerAnotherUser(User u, User currentUser)
         {
             Id = u.Id;
             NicName = u.NicName;
 
-            //TODO вставить проверку на дружбу и на игры
-            //currentUser.DynamicUserInfo.
+            Character = u.DynamicUserInfo.Character + (string.IsNullOrWhiteSpace(u.DynamicUserInfo.Emotion)
+                ? ""
+                : (":" + u.DynamicUserInfo.Emotion));
+
+
+        //TODO вставить проверку на дружбу и на игры
+        //currentUser.DynamicUserInfo.
             IsFriend = false;
             IsPlayed = false;
             IsBot = false;

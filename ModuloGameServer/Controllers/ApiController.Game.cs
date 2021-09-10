@@ -44,11 +44,24 @@ namespace ModuloGameServer.Controllers
 
         }
 
+        // TODO убрать и сделать как надо
+        private DateTime? lastCheckRandomStamp;
+
         /// <summary>
         /// Получить полные данные о конкретной партии
         /// </summary>
         public async Task<string> GetGameInfo([FromBody] RequestGame rg, CancellationToken cancellationToken)
         {
+            // TODO убрать и сделать как надо
+            try
+            {
+                await CheckRandomGames(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+            }
+
             try
             {
                 if (rg == null) return await JsonErrorAsync("No request");
@@ -100,6 +113,10 @@ namespace ModuloGameServer.Controllers
                     competitor = await DBService.DataSourceUser.GetUser(rg.CompetitorUserId.Value, cancellationToken);
                     if (competitor == null) return await JsonErrorAsync("Competitive user not found");
                 }
+                else
+                {
+                    await CheckRandomGames(cancellationToken);
+                }
 
                 Game newGame = new Game()
                 {
@@ -120,8 +137,6 @@ namespace ModuloGameServer.Controllers
                 {
                     return await JsonErrorAsync("Game didn't be created");
                 }
-
-
 
                 Game game = await DBService.DataSourceGame.GetGame(newGame.Id, cancellationToken);
                 if (game == null) return await JsonErrorAsync("Game not found");
@@ -264,6 +279,47 @@ namespace ModuloGameServer.Controllers
                 Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
                 return await JsonErrorAsync("Server Error");
             }
+        }
+
+
+
+        /// <summary>
+        /// Отозвать приглашение 
+        /// </summary>
+        public async Task<string> WithdrawRandomGame([FromBody] RequestGame rg, CancellationToken cancellationToken)
+        {   
+            try
+            {
+                if (rg == null) return await JsonErrorAsync("No request");
+                if (!rg.Id.HasValue) return await JsonErrorAsync("Bad request");
+
+                CheckedUser cu = await CheckCurrentUser(rg.DeviceWorkToken, cancellationToken);
+                if (cu.ErrorString != null) return cu.ErrorString;
+
+                Game game = await DBService.DataSourceGame.GetGame(rg.Id.Value, cancellationToken);
+                if (game == null) return await JsonErrorAsync("Game not found");
+
+                if (game.User1Id != cu.User.Id) return await JsonErrorAsync("Bad command");
+
+                if (game.IsCancel) return await JsonErrorAsync("Game was canceled");
+                if (game.IsDeclined) return await JsonErrorAsync("Game was already declined");
+                if (game.IsStart) return await JsonErrorAsync("Game was already accepted");
+                if (game.IsTimeout) return await JsonErrorAsync("Game was canceled by timeout");
+
+                if (game.User2Id.HasValue) return await JsonErrorAsync("Bad command");
+
+                game.IsCancel = true;
+                await DBService.DataSourceGame.ChangeGame(game, cancellationToken);
+
+                AnswerUserGame ag = new AnswerUserGame(game, cu.User.Id);
+                return JsonConvert.SerializeObject(ag);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                return await JsonErrorAsync("Server Error");
+            }
+
         }
 
 
@@ -443,6 +499,57 @@ namespace ModuloGameServer.Controllers
             }
         }
 
+
+
+        // TODO перенести в отдельное API
+        /// <summary>
+        /// Создать партию, в том числе в выбранным соперником
+        /// Если соперник не выбран, партия переходит в режим Ожидание (IsActive = false)
+        /// </summary>
+        public async Task<string> CheckRandomGames(CancellationToken cancellationToken)
+        {
+            try
+            {
+                List<Game> randomGames = await DBService.DataSourceGame.GetRandomGames(cancellationToken);
+
+                foreach (Game game in randomGames.Where(x =>
+                    (DateTime.Now - x.StartStamp).TotalSeconds > Game.MAX_RANDOM_SEARCH_SEC))
+                {
+                    Logger.LogInformation("Cancel random game because overdue Id = {gameId}", game.Id);
+                    game.IsCancel = true;
+                    game.IsTimeout = true;
+                    await DBService.DataSourceGame.ChangeGame(game, cancellationToken);
+                }
+
+                Game lastGame = null;
+
+                foreach (Game game in randomGames.Where(x => !x.IsCancel))
+                {
+                    if (lastGame == null)
+                    {
+                        lastGame = game;
+                    }
+                    else
+                    {
+                        Logger.LogInformation("Connect game {game1Id} with game {game2Id}", lastGame.Id, game.Id);
+                        lastGame.User2Id = game.User1Id;
+                        lastGame.IsStart = true;
+                        game.PlayingRandomGameId = lastGame.Id;
+                        game.IsCancel = true;
+
+                        await DBService.DataSourceGame.ChangeGame(lastGame, cancellationToken);
+                        await DBService.DataSourceGame.ChangeGame(game, cancellationToken);
+                    }
+                }
+
+                return JsonConvert.SerializeObject(new {Result = "Ok"});
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                return await JsonErrorAsync("Server Error");
+            }
+        }
 
     }
 }

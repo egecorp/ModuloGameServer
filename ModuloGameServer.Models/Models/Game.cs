@@ -13,6 +13,11 @@ namespace ModuloGameServer.Models
         public const int JOKER = 11;
 
         /// <summary>
+        /// Сколько секунд искать случайного пользователя
+        /// </summary>
+        public const int MAX_RANDOM_SEARCH_SEC = 30;
+
+        /// <summary>
         /// Идентификатор
         /// </summary>
         public int Id { set; get; }
@@ -138,6 +143,11 @@ namespace ModuloGameServer.Models
         /// Второй игрок является ботом
         /// </summary>
         public bool IsUser2Bot { set; get; }
+
+        /// <summary>
+        /// Ссылка на игру со случайным соперником, которая станет основной
+        /// </summary>
+        public int? PlayingRandomGameId { set; get; }
 
         #region Digits
 
@@ -303,7 +313,7 @@ namespace ModuloGameServer.Models
 
 
 
-        //public virtual GameResult Result { set; get; }        
+        //public virtual GameResult Result { set; get; }
 
         public GAME_STATUS UpdateStatus()
         {

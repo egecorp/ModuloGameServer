@@ -19,6 +19,16 @@ namespace ModuloGameServer.Models
         public int CommonRating { set; get; }
 
         /// <summary>
+        /// Персонаж пользователя
+        /// </summary>
+        public string Character { set; get; }
+
+        /// <summary>
+        /// Эмоция персонажа пользователя
+        /// </summary>
+        public string Emotion { set; get; }
+
+        /// <summary>
         /// Список активный игр пользователя, в том числе ожидающих подтверждения со стороны пользователя или его соперника 
         /// </summary>
         public List<Game> ActiveGameList { set; get; }

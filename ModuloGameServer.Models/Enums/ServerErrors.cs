@@ -25,7 +25,10 @@ namespace ModuloGameServer.Models
         SIGNIN_BADUSER,
         SIGNIN_TOO_QUICK,
 
-        USER_NOT_FOUND
+        USER_NOT_FOUND,
+        
+        BOT_DENIED,
+        ANONIM_DENIED
     };
 }
 

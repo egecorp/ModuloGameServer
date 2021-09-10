@@ -39,6 +39,11 @@ namespace ModuloGameServer.Models
         Task<List<Game>> GetBotsGames(CancellationToken cancellationToken);
 
         /// <summary>
+        /// Ищет неначатые анонимные игры 
+        /// </summary>
+        Task<List<Game>> GetRandomGames(CancellationToken cancellationToken);
+
+        /// <summary>
         /// Выдаёт агрегирующий результат по играм
         /// </summary>
         /// <param name="mainUserId">Игрок</param>

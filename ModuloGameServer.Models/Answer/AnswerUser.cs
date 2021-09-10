@@ -59,6 +59,18 @@ namespace ModuloGameServer.Models
         /// </summary>
         public DateTime? BlockedUntil { set; get; }
 
+
+        /// <summary>
+        /// Персонаж пользователя
+        /// </summary>
+        public string Character { set; get; }
+
+        /// <summary>
+        /// Эмоция персонажа пользователя
+        /// </summary>
+        public string Emotion { set; get; }
+
+
         public AnswerDynamicUserInfo DynamicUserInfo { set; get; }
 
         public AnswerUser(User u)
@@ -74,6 +86,8 @@ namespace ModuloGameServer.Models
             IsBlocked = u.IsBlocked;
             BlockedUntil = u.BlockedUntil;
             DynamicUserInfo = new AnswerDynamicUserInfo(u.DynamicUserInfo);
+            Character = u.DynamicUserInfo.Character;
+            Emotion = u.DynamicUserInfo.Emotion;
         }
 
         /// <summary>

@@ -607,6 +607,60 @@ namespace ModuloGameServer.Controllers
 
 
 
+
+        /// <summary>
+        /// Ввести код авторизации
+        /// </summary>
+        public async Task<string> SetCharacter([FromBody] RequestUser ru, CancellationToken cancellationToken)
+        {
+            await this.DBService.BeginTransaction(cancellationToken);
+
+            try
+            {
+                if (ru == null) return await JsonErrorAsync(SERVER_ERROR.BAD_DATA);
+
+                int? deviceId = Tokens.GetDeviceId(ru.DeviceWorkToken);
+
+                if (!deviceId.HasValue) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                Device device = await DBService.DataSourceDevice.GetDevice(deviceId.Value, cancellationToken);
+
+                if (device == null) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                if (device.IsDisabled == true) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR);
+
+                if (!device.UserId.HasValue) return await JsonErrorAsync(SERVER_ERROR.SERVER_ERROR);
+
+                User u = await DBService.DataSourceUser.GetUser(device.UserId.Value, cancellationToken);
+
+                if (u == null) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR, true);
+
+                if (u.Id != device.UserId) return await JsonErrorAsync(SERVER_ERROR.ACCESS_ERROR, true);
+
+                if (u.IsBot) return await JsonErrorAsync(SERVER_ERROR.BOT_DENIED, true);
+                if (u.IsAnonim) return await JsonErrorAsync(SERVER_ERROR.ANONIM_DENIED, true);
+
+
+                u.DynamicUserInfo.Character = ru.Character;
+                u.DynamicUserInfo.Emotion = ru.Emotion;
+
+                await DBService.DataSourceUser.UpdateUserInfo(u.DynamicUserInfo, cancellationToken);
+
+                await this.DBService.CoommitTransaction(cancellationToken);
+
+                AnswerUser au = new AnswerUser(u);
+
+                return JsonConvert.SerializeObject(au);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message + Environment.NewLine + e.StackTrace);
+                await this.DBService.RollbackTransaction(cancellationToken);
+                return await JsonErrorAsync(SERVER_ERROR.SERVER_ERROR);
+            }
+        }
+
+
         /// <summary>
         /// Найти пользователя по нику
         /// </summary>

@@ -47,6 +47,17 @@ namespace ModuloGameServer.Request
         /// </summary>
         public string DeviceWorkToken { set; get; }
 
+        /// <summary>
+        /// Персонаж пользователя
+        /// </summary>
+        public string Character { set; get; }
+
+        /// <summary>
+        /// Эмоция персонажа пользователя
+        /// </summary>
+        public string Emotion { set; get; }
+
+
         public RequestUser()
         {
 

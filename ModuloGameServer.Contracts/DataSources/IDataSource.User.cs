@@ -51,5 +51,14 @@ namespace ModuloGameServer.Models
         /// </summary>
         Task<List<User>> GetCompetitors(int userId, CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Возвращает позицию пользователя в мировом рейтинге
+        /// </summary>
+        Task<int> GetWorldPosition(int userId, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Возвращает топ usersCount пользователей
+        /// </summary>
+        Task<List<User>> GetTop(int usersCount, CancellationToken cancellationToken);
     }
 }

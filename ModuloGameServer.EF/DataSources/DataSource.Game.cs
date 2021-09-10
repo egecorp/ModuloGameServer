@@ -25,7 +25,9 @@ namespace ModuloGameServer.Models
         /// <returns></returns>
         public async Task<Game> GetGame(int Id, CancellationToken cancellationToken)
         {
-            Game game = await context.Set<Game>().FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+            Game game = await context.Set<Game>().Include(x => x.User1).Include(x => x.User1.DynamicUserInfo)
+                .Include(x => x.User2).Include(x => x.User2.DynamicUserInfo)
+                .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
             return game;
         }
 
@@ -122,6 +124,18 @@ namespace ModuloGameServer.Models
             List<Game> games = await context.Set<Game>()
                 .Where(x => x.IsUser2Bot
                             && !(x.IsCancel || x.IsFinish || x.IsTimeout || x.IsDeclined || x.IsGiveUp))
+                .ToListAsync(cancellationToken);
+
+            return games;
+        }
+
+        /// <summary>
+        /// Ищет неначатые анонимные игры 
+        /// </summary>
+        public async Task<List<Game>> GetRandomGames(CancellationToken cancellationToken)
+        {
+            List<Game> games = await context.Set<Game>()
+                .Where(x => (x.IsCancel == false) && !x.User2Id.HasValue)
                 .ToListAsync(cancellationToken);
 
             return games;

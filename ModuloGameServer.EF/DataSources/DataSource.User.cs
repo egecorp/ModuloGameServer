@@ -25,7 +25,8 @@ namespace ModuloGameServer.Models
         /// <returns></returns>
         public async Task<User> GetUser(int Id, CancellationToken cancellationToken)
         {
-            return await context.Set<User>().FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+            return await context.Set<User>().Include(x => x.DynamicUserInfo)
+                .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
         }
 
 
@@ -88,7 +89,9 @@ namespace ModuloGameServer.Models
                 u.DynamicUserInfo.RecentGameList = await context
                                                         .Set<Game>()
                                                         .Include(x => x.User1)
+                                                        .Include(x => x.User1.DynamicUserInfo)
                                                         .Include(x => x.User2)
+                                                        .Include(x => x.User2.DynamicUserInfo)
                                                         .Where(x => ((x.User1Id == UserId) || (x.User2Id == UserId)) && (x.IsCancel || x.IsFinish || x.IsTimeout || x.IsDeclined || x.IsGiveUp))
                                                         .OrderBy(x => x.StartStamp)
                                                         .Take(MAX_RECENT_GAME_COUNT)
@@ -98,7 +101,9 @@ namespace ModuloGameServer.Models
                 u.DynamicUserInfo.ActiveGameList = await context
                                                         .Set<Game>()
                                                         .Include(x => x.User1)
+                                                        .Include(x => x.User1.DynamicUserInfo)
                                                         .Include(x => x.User2)
+                                                        .Include(x => x.User2.DynamicUserInfo)
                                                         .Where(x => ((x.User1Id == UserId) || (x.User2Id == UserId)) && !(x.IsCancel || x.IsFinish || x.IsTimeout || x.IsDeclined || x.IsGiveUp))
                                                         .OrderBy(x => x.StartStamp)
                                                         .ToListAsync(cancellationToken);
@@ -135,10 +140,25 @@ namespace ModuloGameServer.Models
                     (x, z) => z)
                 .ToListAsync(cancellationToken);
 
-
             return users;
         }
 
+        public async Task<int> GetWorldPosition(int userId, CancellationToken cancellationToken)
+        {
+            User user = await context.Set<User>().Include(x => x.DynamicUserInfo)
+                .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
 
+            return await context.Set<User>().Include(x => x.DynamicUserInfo)
+                .Where(x => x.DynamicUserInfo.CommonRating > user.DynamicUserInfo.CommonRating)
+                .CountAsync(cancellationToken);
+        }
+
+        public async Task<List<User>> GetTop(int usersCount, CancellationToken cancellationToken)
+        {
+            return await context.Set<User>().Include(x => x.DynamicUserInfo)
+                .OrderByDescending(x => x.DynamicUserInfo.CommonRating )
+                .ThenByDescending(x=>x.Id)
+                .ToListAsync(cancellationToken);
+        }
     }
 }
