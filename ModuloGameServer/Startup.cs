@@ -23,14 +23,14 @@ namespace ModuloGameServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*
+            
             string ConnectionString = Configuration.GetConnectionString("ModuloGameDBContext");
 
 
             services.AddSqlServer(ConnectionString);
             services.AddScoped<IModuloGameDBSetupService, ModuloGameDBSetupService>();
             services.AddScoped<IModuloGameBotService, BotService.BotService>();
-            */
+            
             services.AddControllersWithViews();
 
             services.AddCors(o => o.AddPolicy("ApiPolicy", builder =>
@@ -40,7 +40,7 @@ namespace ModuloGameServer
                        .AllowAnyHeader();
             }));
 
-            //services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
+            services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
 
         }
 
@@ -80,7 +80,7 @@ namespace ModuloGameServer
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                /*
+                
                 endpoints.MapControllerRoute(
                     name: "api",
                     pattern: "API/{controller}/{action}");
@@ -96,7 +96,15 @@ namespace ModuloGameServer
 comodoca.com
 46d3517eb12e1ab");
                 });
-                */
+                
+                endpoints.MapGet(@".well-known/pki-validation/D5250CBBE7E445A3A868BDD9FD2ABDC0.txt", async context =>
+                {
+                    await context.Response.WriteAsync(@"10044330A70A7760F5186361F0793651A097D3201C9DEDE25EA23E1BCD5177B7
+comodoca.com
+64aa6b2a1d6c06c");
+                });
+                
+
                 endpoints.MapGet(@"az", async context =>
                 {
                     await context.Response.WriteAsync(@"az mthfcker");
