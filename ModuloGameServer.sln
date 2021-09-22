@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuloGameServer.EF", "Modu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuloGameServer.Contracts", "ModuloGameServer.Contracts\ModuloGameServer.Contracts.csproj", "{6FEDCD07-9A36-428A-9309-6F08910E0903}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuloGameServer.BotService", "BotService\ModuloGameServer.BotService.csproj", "{FF149348-9967-4BBB-A170-EEFCC8BB90B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuloGameServer.BotService", "BotService\ModuloGameServer.BotService.csproj", "{FF149348-9967-4BBB-A170-EEFCC8BB90B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tt", "tt\tt.csproj", "{13D72084-DE65-4C2C-A23D-50E3D63F0E66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{FF149348-9967-4BBB-A170-EEFCC8BB90B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF149348-9967-4BBB-A170-EEFCC8BB90B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF149348-9967-4BBB-A170-EEFCC8BB90B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13D72084-DE65-4C2C-A23D-50E3D63F0E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13D72084-DE65-4C2C-A23D-50E3D63F0E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13D72084-DE65-4C2C-A23D-50E3D63F0E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13D72084-DE65-4C2C-A23D-50E3D63F0E66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
