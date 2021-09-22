@@ -95,8 +95,12 @@ namespace ModuloGameServer
 comodoca.com
 46d3517eb12e1ab");
                 });
-                 
-                    
+
+                endpoints.MapGet(@"az", async context =>
+                {
+                    await context.Response.WriteAsync(@"az mthfcker");
+                });
+
 
 
             });
