@@ -12,13 +12,20 @@ namespace ModuloGameServer
         {
             return app =>
             {
-                using (IServiceScope scope = app.ApplicationServices.CreateScope())
+                try
                 {
-                    var dBSetup = scope.ServiceProvider.GetService<IModuloGameDBSetupService>();
-                    dBSetup.Setup();
-                    next(app);
+                    using (IServiceScope scope = app.ApplicationServices.CreateScope())
+                    {
+                        var dBSetup = scope.ServiceProvider.GetService<IModuloGameDBSetupService>();
+                        dBSetup.Setup();
+                        next(app);
+                    }
                 }
-
+                catch (Exception e)
+                {
+                    TempLog.Log(e.Message + " " + e.StackTrace);
+                    throw;
+                }
             };
 
         }
