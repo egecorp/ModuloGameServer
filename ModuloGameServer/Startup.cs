@@ -41,7 +41,7 @@ namespace ModuloGameServer
                        .AllowAnyHeader();
             }));
 
-            services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
+            //services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
 
         }
 
