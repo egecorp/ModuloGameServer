@@ -30,7 +30,7 @@ namespace ModuloGameServer
 
             string ConnectionString = Configuration.GetConnectionString("ModuloGameDBContext");
 
-
+            
 
             services.AddSqlServer(ConnectionString);
             services.AddScoped<IModuloGameDBSetupService, ModuloGameDBSetupService>();
@@ -53,6 +53,8 @@ namespace ModuloGameServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            TempLog.Log("env.EnvironmentName=");
+            TempLog.Log(env.EnvironmentName);
 
             TempLog.Log("Startup.Configure: 52");
 
