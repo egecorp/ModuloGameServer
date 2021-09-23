@@ -24,7 +24,8 @@ namespace ModuloGameServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            TempLog.Log("Startup.ConfigureServices: 27");
+
             string ConnectionString = Configuration.GetConnectionString("ModuloGameDBContext");
 
 
@@ -41,8 +42,9 @@ namespace ModuloGameServer
                        .AllowAnyHeader();
             }));
 
-            //services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
-
+            TempLog.Log("Startup.ConfigureServices: 45");
+            services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
+            TempLog.Log("Startup.ConfigureServices: 47");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

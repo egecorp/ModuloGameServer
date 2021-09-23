@@ -15,7 +15,7 @@ namespace ModuloGameServer
 
         public static void Log(string txt)
         {
-            File.AppendAllText(fileName, txt + Environment.NewLine);
+            File.AppendAllText(fileName, DateTime.Now.ToString() + " " + txt + Environment.NewLine);
         }
         
     }
