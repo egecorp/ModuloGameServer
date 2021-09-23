@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -7,7 +8,16 @@ namespace ModuloGameServer
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            try
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception e)
+            {
+                TempLog.Log("Main error:");
+                TempLog.Log(e.Message);
+                throw;
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
