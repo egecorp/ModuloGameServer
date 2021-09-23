@@ -26,7 +26,7 @@ namespace ModuloGameServer
         {
             TempLog.Log("Startup.ConfigureServices: 27");
             TempLog.Log("Configuration");
-            TempLog.Log(Newtonsoft.Json.JsonConvert.SerializeObject(Configuration));
+            //TempLog.Log(Newtonsoft.Json.JsonConvert.SerializeObject(Configuration));
 
             string ConnectionString = Configuration.GetConnectionString("ModuloGameDBContext");
 
@@ -46,7 +46,7 @@ namespace ModuloGameServer
             }));
 
             TempLog.Log("Startup.ConfigureServices: 45");
-            services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
+            //services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
             TempLog.Log("Startup.ConfigureServices: 47");
         }
 
