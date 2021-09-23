@@ -48,6 +48,9 @@ namespace ModuloGameServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            TempLog.Log("Startup.Configure: 52");
+
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -116,6 +119,8 @@ comodoca.com
                 });
 
             });
+
+            TempLog.Log("Startup.Configure: 123");
         }
     }
 }
