@@ -49,7 +49,7 @@ namespace ModuloGameServer
             }));
 
             TempLog.Log("Startup.ConfigureServices: 45");
-            //services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
+            services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
             TempLog.Log("Startup.ConfigureServices: 47");
         }
 

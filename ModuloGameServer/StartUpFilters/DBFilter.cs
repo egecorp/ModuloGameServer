@@ -10,14 +10,20 @@ namespace ModuloGameServer
     {
         public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
         {
+            TempLog.Log("Configure: 13");
+
             return app =>
             {
+                TempLog.Log("Configure: 17");
                 try
                 {
                     using (IServiceScope scope = app.ApplicationServices.CreateScope())
                     {
+                        TempLog.Log("Configure: 22");
                         var dBSetup = scope.ServiceProvider.GetService<IModuloGameDBSetupService>();
+                        TempLog.Log("Configure: 24");
                         dBSetup.Setup();
+                        TempLog.Log("Configure: 26");
                         next(app);
                     }
                 }
