@@ -25,6 +25,7 @@ namespace ModuloGameServer
         public void ConfigureServices(IServiceCollection services)
         {
             TempLog.Log("Startup.ConfigureServices: 27");
+            TempLog.Log("Configuration");
             TempLog.Log(Newtonsoft.Json.JsonConvert.SerializeObject(Configuration));
 
             string ConnectionString = Configuration.GetConnectionString("ModuloGameDBContext");
