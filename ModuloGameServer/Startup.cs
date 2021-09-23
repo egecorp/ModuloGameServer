@@ -41,20 +41,17 @@ namespace ModuloGameServer
                        .AllowAnyHeader();
             }));
 
-            //services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
+            services.AddTransient<IStartupFilter, ModuloGameDBStartupFilter>();
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
-
 
             if (true || env.IsDevelopment())
             {
@@ -68,7 +65,6 @@ namespace ModuloGameServer
             }
 
 
-
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -77,8 +73,7 @@ namespace ModuloGameServer
             app.UseCors("ApiPolicy");
 
             app.UseAuthorization();
-
-
+            
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddConsole();
@@ -114,14 +109,11 @@ comodoca.com
 comodoca.com
 64aa6b2a1d6c06c");
                 });
-                
 
                 endpoints.MapGet(@"az", async context =>
                 {
                     await context.Response.WriteAsync(@"az mthfcker");
                 });
-
-
 
             });
         }
